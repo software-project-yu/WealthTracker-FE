@@ -1,5 +1,11 @@
+import BackGround from "../components/BackGround";
+import SideMenu from "../components/SideMenu";
+
 export default function Main() {
-  return <div>
-    
-  </div>;
+  return (
+    <div>
+      <SideMenu />
+      <BackGround/>
+    </div>
+  );
 }
