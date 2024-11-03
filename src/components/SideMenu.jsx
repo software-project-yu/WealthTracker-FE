@@ -70,12 +70,7 @@ export default function SideMenu() {
       <Line />
       <ProfileContainer>
         <ProfileImage src={defaultProfile} />
-        <ProfileTextContainer>
-          <ProfileUserName>홍길동</ProfileUserName>
-          <ProfileToProfilePage onClick={() => nav("/settings")}>
-            프로필 보기
-          </ProfileToProfilePage>
-        </ProfileTextContainer>
+        <ProfileUserName>홍길동</ProfileUserName>
       </ProfileContainer>
       {/* 메뉴 아이템 */}
       {pageName.map((item, idx) => (
@@ -125,27 +120,17 @@ const ProfileContainer = styled.div`
   align-items: flex-start;
   width: 100%;
   margin-top: 2rem;
-`;
-const ProfileTextContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.5rem;
   margin-bottom: 3rem;
 `;
 const ProfileImage = styled.img`
-  width: 3rem;
-  height: 3rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
 `;
 const ProfileUserName = styled.a`
+  align-self: center;
   font-size: 1rem;
   color: ${({ theme }) => theme.colors.white};
-`;
-const ProfileToProfilePage = styled.a`
-  font-size: 0.8rem;
-  color: ${({ theme }) => theme.colors.gray02};
-  cursor: pointer;
 `;
 const MenuItemText = styled.a`
   color: ${({ theme }) => theme.colors.gray01};
