@@ -55,6 +55,14 @@ export default function SideMenu() {
   const onClickMenuItem = (src) => {
     nav(src);
   };
+  //로그아웃
+  const onClickLogout = () => {
+    if (window.confirm("로그아웃 하시겠습니까?")) {
+      nav("/login");
+      //토큰 삭제
+      localStorage.removeItem("token");
+    }
+  };
 
   return (
     <Container>
@@ -82,7 +90,7 @@ export default function SideMenu() {
       ))}
       <LogoutContainer>
         <LogoutImg src={LogoutIcon} />
-        <LogoutText>로그아웃</LogoutText>
+        <LogoutText onClick={onClickLogout}>로그아웃</LogoutText>
       </LogoutContainer>
     </Container>
   );
