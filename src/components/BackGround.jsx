@@ -13,10 +13,11 @@ export default function BackGround() {
 }
 const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.gray00};
+  width: 100%;
+  height: 3rem;
   display: flex;
-  margin-left: 19rem;
+  align-items:center;
   padding: 2rem;
-  gap: 0.5rem;
 `;
 const ArrowImage = styled.img`
   width: 1rem;

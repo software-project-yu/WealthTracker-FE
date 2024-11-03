@@ -98,16 +98,12 @@ export default function SideMenu() {
 
 const Container = styled.div`
   width: 15rem;
-  height: 100%;
+  min-height: 100vh;
   background-color: ${({ theme }) => theme.colors.black02};
-  position: fixed;
-  top: 0;
-  left: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0px;
-  padding: 2rem;
+  padding: 0 2rem;
   gap: 1rem;
 `;
 const Logo = styled.h1`
