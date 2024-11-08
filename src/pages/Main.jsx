@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Graph from "../components/Graph";
 import Layout from "../components/Layout";
 import CircleGraph from "../components/CircleGraph";
+import DailyGraph from "../components/DailyGraph";
 
 export default function Main() {
   //예시 데이터
@@ -43,6 +44,25 @@ export default function Main() {
   const currentAmount = 85; // 현재 금액
   const chartWidth = 260; // 원하는 가로 크기
   const chartHeight = 120; // 원하는 높이
+
+  //지출 페이지 그래프 데이터 예시
+  const dailyData = [
+    { dayNum: 26, costNum: 12000 },
+    { dayNum: 27, costNum: 15000 },
+    { dayNum: 28, costNum: 13000 },
+    { dayNum: 29, costNum: 10000 },
+    { dayNum: 30, costNum: 11000 },
+    { dayNum: 31, costNum: 14000 },
+    { dayNum: 1, costNum: 16000 },
+    { dayNum: 2, costNum: 9000 },
+    { dayNum: 3, costNum: 12000 },
+    { dayNum: 4, costNum: 17000 },
+    { dayNum: 5, costNum: 13000 },
+    { dayNum: 6, costNum: 10000 },
+    { dayNum: 7, costNum: 100000 },
+    { dayNum: 8, costNum: 115000 },
+  ];
+
   return (
     <Layout>
       <h1>Example</h1>
@@ -55,6 +75,9 @@ export default function Main() {
         width={chartWidth}
         height={chartHeight}
       />
+      <Container>
+        <DailyGraph data={dailyData} />
+      </Container>
     </Layout>
   );
 }
