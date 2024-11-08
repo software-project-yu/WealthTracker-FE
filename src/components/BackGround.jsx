@@ -18,10 +18,12 @@ const Container = styled.div`
   display: flex;
   align-items:center;
   padding: 2rem;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray02};
 `;
 const ArrowImage = styled.img`
   width: 1rem;
   height: 1rem;
+  margin-right: 8px;
 `;
 const DateText = styled.a`
   color: ${({ theme }) => theme.colors.gray03};
