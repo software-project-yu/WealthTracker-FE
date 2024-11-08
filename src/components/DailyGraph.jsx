@@ -8,9 +8,9 @@ const DailyGraph = ({ data }) => {
     <ResponsiveBar
       data={data.map((d) => ({
         day: `${d.dayNum}일`, // X축에 표시될 주차 정보
-        cost: d.costNum,
+        일: d.costNum,
       }))}
-      keys={["cost"]}
+      keys={["일"]}
       indexBy="day"
       margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
       padding={0.5}
