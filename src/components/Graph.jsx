@@ -15,6 +15,7 @@ const Graph = ({ data }) => {
       }))}
       keys={["저번달", "이번달"]}
       indexBy="week"
+      layout="vertical"
       margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
       padding={0.5}
       innerPadding={10}
