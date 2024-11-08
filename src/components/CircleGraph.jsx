@@ -49,7 +49,7 @@ export default function CircleGraph({
   const [currentValue, setCurrentValue] = useState(0);
   const finalValue = currentAmount;
   const cx = width / 2;
-  const cy = height -15;
+  const cy = height - 15;
 
   // 바늘 애니메이션 효과
   useEffect(() => {
