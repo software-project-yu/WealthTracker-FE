@@ -8,6 +8,7 @@ import ScheduledPayments from "./pages/ScheduledPayments";
 import Expense from "./pages/Expense";
 import Goals from "./pages/Goals";
 import Settings from "./pages/Settings";
+import styled from "styled-components";
 
 function App() {
   return (
