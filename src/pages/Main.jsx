@@ -1,3 +1,4 @@
+//메인 페이지
 import Layout from "../components/Layout";
 
 export default function Main() {

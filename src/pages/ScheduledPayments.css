@@ -1,0 +1,103 @@
+/* 메인 컨테이너 스타일 */
+.scheduled-payments-container {
+  width: Fixed (1, 104px) px;
+  height: Fixed (800px) px;
+  top: 164px;
+  left: 304px;
+  padding: 24px 0px 0px 0px;
+  gap: 16px;
+  border-radius: 8px 0px 0px 0px;
+  opacity: 0px;
+  box-shadow: 0px 20px 25px 0px rgba(76, 103, 100, 0.1);
+}
+
+/* 제목 스타일 */
+.scheduled-title {
+  width: 82px;
+  height: 32px;
+  top: 104px;
+  left: 304px;
+}
+
+/* 결제 목록 헤더 스타일 */
+.payment-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+  font-weight: bold;
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+  color: #666666;
+}
+
+/* 결제 항목 스타일 */
+.payment-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333333;
+}
+
+.payment-item div:first-child {
+  width: 80px;
+  text-align: center;
+}
+
+/* 직접입력 버튼 스타일 */
+.add-payment-button {
+  background-color: #3b82f6;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.add-payment-button:hover {
+  background-color: #2563eb;
+}
+
+/* 모달 스타일 */
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* 저장 버튼 스타일 */
+.save-button {
+  background-color: #3b82f6;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
