@@ -21,8 +21,8 @@ const SubContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  background-color: ${({ theme }) => theme.colors.gray00};
 `;
-
 const Sub = styled.div`
   display: flex;
   flex-direction: column;
