@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import Layout from "../components/Layout";
-import "./ScheduledPayments.css";
+import styled from "styled-components";
 
 export default function ScheduledPayments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentPayment, setCurrentPayment] = useState(null);
-  const [payments, setPayments] = useState([
+  const [payments] = useState([
     {
       id: 1,
       date: "2024-05-15",
@@ -18,175 +16,202 @@ export default function ScheduledPayments() {
   ]);
 
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setIsEditing(false);
-    setCurrentPayment(null);
-  };
-
-  const addOrEditPayment = (newPayment) => {
-    if (isEditing && currentPayment) {
-      // 수정 모드일 때, 해당 항목 업데이트
-      setPayments((prevPayments) =>
-        prevPayments.map((payment) =>
-          payment.id === currentPayment.id
-            ? { ...payment, ...newPayment }
-            : payment
-        )
-      );
-    } else {
-      // 새 항목 추가 모드일 때, 새로운 항목 추가
-      setPayments([...payments, { id: payments.length + 1, ...newPayment }]);
-    }
-    closeModal();
-  };
-
-  const editPayment = (payment) => {
-    setCurrentPayment(payment);
-    setIsEditing(true);
-    openModal();
-  };
-
-  const deletePayment = (paymentId) => {
-    if (window.confirm("정말로 삭제하시겠습니까?")) {
-      setPayments((prevPayments) =>
-        prevPayments.filter((p) => p.id !== paymentId)
-      );
-    }
-  };
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <Layout>
-      <h3 className="scheduled-title">결제 예정</h3>
-      <div className="scheduled-payments-container">
-        <div className="payment-list">
-          <div className="payment-header">
+      <ScheduledTitle>결제 예정</ScheduledTitle>
+      <ScheduledPaymentsContainer>
+        <PaymentList>
+          <PaymentHeader>
             <div>결제 예정일</div>
             <div>상호</div>
             <div>상세내역</div>
             <div>마지막 결제</div>
             <div>금액</div>
-          </div>
+          </PaymentHeader>
           {payments.map(
             ({ id, date, service, details, lastPayment, amount }) => (
-              <div key={id} className="payment-item">
+              <PaymentItem key={id}>
                 <div>{date}</div>
                 <div>{service}</div>
                 <div>{details}</div>
                 <div>{lastPayment}</div>
                 <div>{amount}</div>
-                <div className="action-buttons">
-                  <button
-                    onClick={() =>
-                      editPayment({
-                        id,
-                        date,
-                        service,
-                        details,
-                        lastPayment,
-                        amount,
-                      })
-                    }
-                  >
-                    수정
-                  </button>
-                  <button onClick={() => deletePayment(id)}>삭제</button>
-                </div>
-              </div>
+                <ActionButtons>
+                  <button onClick={() => {}}>수정</button>
+                  <button onClick={() => {}}>삭제</button>
+                </ActionButtons>
+              </PaymentItem>
             )
           )}
-          <button onClick={openModal} className="add-payment-button">
-            작성하기
-          </button>
-        </div>
-        {isModalOpen && (
-          <PaymentModal
-            closeModal={closeModal}
-            addOrEditPayment={addOrEditPayment}
-            isEditing={isEditing}
-            currentPayment={currentPayment}
-          />
-        )}
-      </div>
+          <AddPaymentButton onClick={openModal}>작성하기</AddPaymentButton>
+        </PaymentList>
+        {isModalOpen && <PaymentModal closeModal={closeModal} />}
+      </ScheduledPaymentsContainer>
     </Layout>
   );
 }
 
-const PaymentModal = ({
-  closeModal,
-  addOrEditPayment,
-  isEditing,
-  currentPayment,
-}) => {
-  const [formData, setFormData] = useState(
-    currentPayment || {
-      date: "",
-      service: "",
-      details: "",
-      lastPayment: "",
-      amount: "",
-    }
-  );
+const ScheduledPaymentsContainer = styled.div`
+  width: 1104px
+  height: 880px
+  margin: 20px auto;
+  top: 164px;
+  left: 304px;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0px 20px 25px rgba(76, 103, 100, 0.1);
+  background-color: #fff;
+  gap: 16px;
+  opacity: 0px;
+`;
 
-  const handleChange = ({ target: { name, value } }) =>
-    setFormData((prev) => ({ ...prev, [name]: value }));
+const ScheduledTitle = styled.h3`
+  width: 100px;
+  height: 32px;
+  top: 104px;
+  left: 304px;
+  gap: 0px;
+  opacity: 0px;
+  font-family: Pretendard;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 32px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+`;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    addOrEditPayment(formData);
-  };
+const PaymentList = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
+const PaymentHeader = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  font-weight: bold;
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+  color: #666666;
+  text-align: center;
+`;
+
+const PaymentItem = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333333;
+  text-align: center;
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  justify-content: space-around;
+  button {
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #f3f4f6;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  button:hover {
+    background-color: #ddd;
+  }
+`;
+
+const AddPaymentButton = styled.button`
+  background-color: #3b82f6;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  width: 100%;
+  &:hover {
+    background-color: #2563eb;
+  }
+`;
+
+const PaymentModal = ({ closeModal }) => {
   return (
-    <div className="modal-background">
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="close-button" onClick={closeModal}>
-          ✕
-        </button>
-        <h3>{isEditing ? "결제 예정일 수정" : "결제 예정일"}</h3>
-        <form onSubmit={handleSubmit}>
+    <ModalBackground onClick={closeModal}>
+      <Modal onClick={(e) => e.stopPropagation()}>
+        <CloseButton onClick={closeModal}>✕</CloseButton>
+        <h3>결제 예정일</h3>
+        <form>
           <label>결제 예정일</label>
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-          />
+          <input type="date" name="date" />
           <label>상호</label>
           <input
             type="text"
             name="service"
-            value={formData.service}
             placeholder="브랜드 또는 회사명을 입력해 주세요."
-            onChange={handleChange}
           />
           <label>상세내역</label>
           <input
             type="text"
             name="details"
-            value={formData.details}
             placeholder="정기 구독 등과 같은 자세한 내용을 입력해 주세요."
-            onChange={handleChange}
           />
           <label>마지막 결제</label>
-          <input
-            type="date"
-            name="lastPayment"
-            value={formData.lastPayment}
-            onChange={handleChange}
-          />
+          <input type="date" name="lastPayment" />
           <label>금액</label>
           <input
             type="text"
             name="amount"
-            value={formData.amount}
             placeholder="금액이 어느 정도 인가요?"
-            onChange={handleChange}
           />
-          <button type="submit" className="save-button">
-            저장
-          </button>
+          <SaveButton type="button">저장</SaveButton>
         </form>
-      </div>
-    </div>
+      </Modal>
+    </ModalBackground>
   );
 };
+
+const ModalBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Modal = styled.div`
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  position: relative;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+`;
+
+const SaveButton = styled.button`
+  background-color: #3b82f6;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  width: 100%;
+`;
