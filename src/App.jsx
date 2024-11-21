@@ -13,14 +13,12 @@ import styled from "styled-components";
 function App() {
   return (
     <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<Main />} />
-        <Route path="/transactions" element={<Transactions />} />
-        <Route path="/scheduledpayments" element={<ScheduledPayments />} />
-        <Route path="/expenses" element={<Expense />} />
-        <Route path="/goals" element={<Goals />} />
-        <Route path="/settings" element={<Settings />} />
-      </Route>
+      <Route path="/" element={<Main />} />
+      <Route path="/transactions" element={<Transactions />} />
+      <Route path="/scheduledpayments" element={<ScheduledPayments />} />
+      <Route path="/expenses" element={<Expense />} />
+      <Route path="/goals" element={<Goals />} />
+      <Route path="/settings" element={<Settings />} />
     </Routes>
   );
 }

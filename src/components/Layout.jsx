@@ -16,14 +16,22 @@ export default function Layout({ children }) {
 }
 const Container = styled.div`
   display: flex;
+  background-color: ${({ theme }) => theme.colors.gray00};
+  min-height: 100vh;
 `;
 const SubContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: ${({ theme }) => theme.colors.gray00};
+  min-width: 0;
+  flex: 1;
 `;
 
 const Sub = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1;
+  overflow: auto;
+  padding: 2rem;
 `;
