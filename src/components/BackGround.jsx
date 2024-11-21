@@ -16,7 +16,7 @@ const Container = styled.div`
   width: 100%;
   height: 1.5rem; 
   display: flex;
-  align-items:center;
+  align-items: center;
   padding: 2rem;
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray02};
 `;
