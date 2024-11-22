@@ -67,7 +67,7 @@ const Graph = ({ data }) => {
           anchor: "top-right",
           direction: "row",
           justify: false,
-          translateX: 100,
+          translateX: 50,
           translateY: -40,
           itemsSpacing: 2,
           itemWidth: 100,

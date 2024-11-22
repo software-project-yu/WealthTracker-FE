@@ -4,46 +4,44 @@ import Layout from "../components/Layout";
 import CircleGraph from "../components/CircleGraph";
 import DailyGraph from "../components/DailyGraph";
 import Logo from "../assets/images/Logo.png";
+import SavingsGoal from "../components/main/SavingsGoal";
 export default function Main() {
   //   //예시 데이터
-  //   //실제 구현 시 서버API 통신으로 데이터를 받아옵니다.
-  //   const data = [
-  //     {
-  //       month: 11,
-  //       weekNum: 1,
-  //       thisWeekTotalCost: 20046,
-  //       lastWeekTotalCost: 2120,
-  //     },
-  //     {
-  //       month: 11,
-  //       weekNum: 2,
-  //       thisWeekTotalCost: 11110,
-  //       lastWeekTotalCost: 1120,
-  //     },
-  //     {
-  //       month: 11,
-  //       weekNum: 3,
-  //       thisWeekTotalCost: 12000,
-  //       lastWeekTotalCost: 30069,
-  //     },
-  //     {
-  //       month: 11,
-  //       weekNum: 4,
-  //       thisWeekTotalCost: 22212,
-  //       lastWeekTotalCost: 10022,
-  //     },
-  //     {
-  //       month: 11,
-  //       weekNum: 5,
-  //       thisWeekTotalCost: 12100,
-  //       lastWeekTotalCost: 10000,
-  //     },
-  //   ];
-  //   //원형 그래프 데이터 예시
-  //   const goalAmount = 100; // 목표 금액
-  //   const currentAmount = 85; // 현재 금액
-  //   const chartWidth = 260; // 원하는 가로 크기
-  //   const chartHeight = 120; // 원하는 높이
+  //실제 구현 시 서버API 통신으로 데이터를 받아옵니다.
+  const data = [
+    {
+      month: 11,
+      weekNum: 1,
+      thisWeekTotalCost: 20046,
+      lastWeekTotalCost: 2120,
+    },
+    {
+      month: 11,
+      weekNum: 2,
+      thisWeekTotalCost: 11110,
+      lastWeekTotalCost: 1120,
+    },
+    {
+      month: 11,
+      weekNum: 3,
+      thisWeekTotalCost: 12000,
+      lastWeekTotalCost: 30069,
+    },
+    {
+      month: 11,
+      weekNum: 4,
+      thisWeekTotalCost: 22212,
+      lastWeekTotalCost: 10022,
+    },
+    {
+      month: 11,
+      weekNum: 5,
+      thisWeekTotalCost: 12100,
+      lastWeekTotalCost: 10000,
+    },
+  ];
+  
+
   //   //지출 페이지 그래프 데이터 예시
   //   const dailyData = [
   //     { dayNum: 26, costNum: 12000 },
@@ -98,12 +96,18 @@ export default function Main() {
           <Content>2ss asdadadasd</Content>
         </div>
         <div>
-          <Title>소비 통계</Title>
-          <Content>3</Content>
+          <Title>결제 예정</Title>
+          <Content>
+            <SavingsGoal />
+          </Content>
         </div>
         <ConsumptionContainer>
           <Title>소비 통계</Title>
-          <Content>5sasdasda</Content>
+          <Content>
+            <GraphContainer>
+              <Graph data={data} />
+            </GraphContainer>
+          </Content>
         </ConsumptionContainer>
         <ConsumptionReportContainer>
           <Title>소비 분석 리포트</Title>
@@ -111,7 +115,9 @@ export default function Main() {
         </ConsumptionReportContainer>
         <RecentTransactionReportContainer>
           <Title>최근 거래 내역</Title>
-          <Content>7</Content>
+          <Content>
+            
+          </Content>
         </RecentTransactionReportContainer>
       </GridContainer>
     </Layout>
@@ -122,19 +128,24 @@ export default function Main() {
 const ConsumptionContainer = styled.div`
   grid-area: 2/1/3/3;
   display: flex;
+  flex-direction: column;
+  height: 100%;
 `;
 
 // 소비 분석 리포트
 const ConsumptionReportContainer = styled.div`
   grid-area: 3/1/3/3;
   display: flex;
+  margin-top: 0;
+  height: 100%;
 `;
 
 // 최근 거래 내역
 const RecentTransactionReportContainer = styled.div`
   grid-area: 2/3/4/3;
   display: flex;
-  margin-bottom: -2rem;
+  margin-bottom: 0rem;
+  height: 100%;
 `;
 
 const Title = styled.h2`
@@ -145,9 +156,9 @@ const Title = styled.h2`
 const Content = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 0.5rem;
-  padding: 1rem;
+  padding: 0.8rem;
   align-items: center;
-  min-height: 90%;
+  height: 100%;
   display: flex;
   justify-content: center;
   box-shadow: 0px 20px 25px 0px rgba(76, 103, 100, 0.1);
@@ -163,19 +174,20 @@ const GridContainer = styled.div`
   position: relative;
   z-index: 10;
   width: 100%;
-  height: 100%;
-  padding: 1rem;
+  height: calc(100vh - 10rem);
+  margin: 0;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: repeat(3, 1fr);
   gap: 1rem;
   > div {
     border-radius: 0.5rem;
-    padding: 1rem;
+    padding: 0 0.8rem;
     display: flex;
     flex-direction: column;
     min-height: 0;
+    height: 100%;
   }
-  //반응형 1024px 기준 
+  //반응형 1024px 기준
   @media (max-width: 1024px) {
     height: auto;
     grid-template-columns: 1fr;
@@ -193,4 +205,15 @@ const GridContainer = styled.div`
       grid-area: auto;
     }
   }
+`;
+
+const GraphContainer = styled.div`
+  width: 100%;
+  max-width: 45rem;
+  height: 100%;
+  max-height: 15rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
 `;
