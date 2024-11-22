@@ -14,6 +14,15 @@ import icon6 from "../assets/images/menu_Icon/icon6.png";
 import icon6_white from "../assets/images/menu_Icon/icon6-white.png";
 import LogoutIcon from "../assets/images/menu_Icon/Logout.png";
 import styled from "styled-components";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Box,
+  Button,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  SwipeableDrawer,
+} from "@mui/material";
 
 export default function SideMenu() {
   //경로 배열
@@ -64,7 +73,59 @@ export default function SideMenu() {
     }
   };
 
-  return (
+  //햄버거 메뉴
+  const [menu, setMenu] = useState({ top: false });
+
+  const toggleDrawer = (anchor, open) => (e) => {
+    if (e && e.type == "keydown" && (e.key == "Tab" || e.key == "Shift")) {
+      return;
+    }
+    setMenu({ ...menu, [anchor]: open });
+  };
+  const list = (anchor) => (
+    <Box
+      sx={{ width: "auto", maxWidth: "100%" }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        {pageName.map((item, idx) => (
+          <MenuItemContainer
+            key={idx}
+            onClick={() => onClickMenuItem(item.page)}
+          >
+            <MenuItemImg
+              src={item.imageSrc}
+              data-white-src={item.imageSrcWhite}
+              alt={`${item.imageSrc} icon`}
+            />
+            <MenuItemText>{item.name}</MenuItemText>
+          </MenuItemContainer>
+        ))}
+      </List>
+    </Box>
+  );
+
+  //브라우저 넓이 계산
+  const [browserWidth, setBrowserWidth] = useState(0);
+  const resizeTimer = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (resizeTimer.current !== null) return;
+      resizeTimer.current = setTimeout(() => {
+        resizeTimer.current = null;
+        setBrowserWidth(window.innerWidth);
+      }, 200);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [browserWidth]);
+
+  return browserWidth > 1024 ? (
     <Container>
       <Logo>WealthTracker</Logo>
       <Line />
@@ -88,6 +149,29 @@ export default function SideMenu() {
         <LogoutText onClick={onClickLogout}>로그아웃</LogoutText>
       </LogoutContainer>
     </Container>
+  ) : (
+    <React.Fragment>
+      <Button
+        onClick={toggleDrawer("top", true)}
+        sx={{ backgroundColor: "black", borderRadius: 0 }}
+      >
+        Menu
+      </Button>
+      <SwipeableDrawer
+        anchor="top"
+        open={menu["top"]}
+        onClose={toggleDrawer("top", false)}
+        onOpen={toggleDrawer("top", true)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "black",
+            borderRadius: 0,
+          },
+        }}
+      >
+        {list("top")}
+      </SwipeableDrawer>
+    </React.Fragment>
   );
 }
 
