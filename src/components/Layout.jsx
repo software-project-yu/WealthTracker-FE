@@ -18,6 +18,7 @@ const Container = styled.div`
   display: flex;
   background-color: ${({ theme }) => theme.colors.gray00};
   min-height: 100vh;
+  width: 100%;
 `;
 const SubContainer = styled.div`
   display: flex;
@@ -32,5 +33,5 @@ const Sub = styled.div`
   flex-direction: column;
   flex: 1;
   overflow: auto;
-  padding: 2rem;
+  padding: 1rem;
 `;
