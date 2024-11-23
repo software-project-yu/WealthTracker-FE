@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import BackGround from "../components/BackGround";
-import SideMenu from "../components/SideMenu";
+import BackGround from "../BackGround";
+import SideMenu from "../common/SideMenu";
 
 //공통 레이아웃
 export default function Layout({ children }) {
