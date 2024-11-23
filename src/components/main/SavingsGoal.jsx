@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import CircleGraph from "../CircleGraph.jsx";
+import CircleGraph from "../common/CircleGraph.jsx";
 
 export default function SavingsGoal() {
   //윤년 계산을 위한 현재 날짜
