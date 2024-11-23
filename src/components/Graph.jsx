@@ -16,7 +16,7 @@ const Graph = ({ data }) => {
       keys={["저번달", "이번달"]}
       indexBy="week"
       layout="vertical"
-      margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+      margin={{ top: 40, right: 50, bottom: 40, left: 50 }}
       padding={0.5}
       innerPadding={10}
       groupMode="grouped"
@@ -67,7 +67,7 @@ const Graph = ({ data }) => {
           anchor: "top-right",
           direction: "row",
           justify: false,
-          translateX: 100,
+          translateX: 50,
           translateY: -40,
           itemsSpacing: 2,
           itemWidth: 100,

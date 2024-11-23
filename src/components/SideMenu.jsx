@@ -19,8 +19,6 @@ import {
   Box,
   Button,
   List,
-  ListItemButton,
-  ListItemIcon,
   SwipeableDrawer,
 } from "@mui/material";
 
@@ -184,6 +182,8 @@ const Container = styled.div`
   align-items: center;
   padding: 0 2rem;
   gap: 1rem;
+  position: sticky;
+  top: 0;
 `;
 const Logo = styled.h1`
   color: ${({ theme }) => theme.colors.white};
