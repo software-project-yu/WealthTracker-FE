@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import useFetchData from "../../hooks/useFetch";
+import Error from "../common/Error";
+import LoadingSpinners from "../common/LoadingSpinners";
 
 export default function CurrentConsumptionList() {
   const example = [
@@ -38,23 +41,24 @@ export default function CurrentConsumptionList() {
       expendDate: "2024-11-18",
     },
   ];
-  //날짜 포맷
-  //비용 쉼표 처리
-
+  const { data, error, isLoading } = useFetchData("/api/expend/list");
+  if (error) return <Error />;
+  if (isLoading) return <LoadingSpinners />;
   return (
     <Container>
-      {example?.map((item) => (
-        <BoxContainer key={item.expendId}>
-          <LeftContainer>
-            <BigText>{item.expendName}</BigText>
-            <SmallText>{item.category}</SmallText>
-          </LeftContainer>
-          <RightContainer>
-            <BigText>{item.cost.toLocaleString("ko-KR")}원</BigText>
-            <SmallText>{item.expendDate.replaceAll("-", ".")}</SmallText>
-          </RightContainer>
-        </BoxContainer>
-      ))}
+      {data &&
+        data.map((item) => (
+          <BoxContainer key={item.expendId}>
+            <LeftContainer>
+              <BigText>{item.expendName}</BigText>
+              <SmallText>{item.category}</SmallText>
+            </LeftContainer>
+            <RightContainer>
+              <BigText>{item.cost.toLocaleString("ko-KR")}원</BigText>
+              <SmallText>{item.expendDate.replaceAll("-", ".")}</SmallText>
+            </RightContainer>
+          </BoxContainer>
+        ))}
     </Container>
   );
 }
