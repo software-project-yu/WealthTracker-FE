@@ -15,12 +15,7 @@ import icon6_white from "../../assets/images/menu_Icon/icon6-white.png";
 import LogoutIcon from "../../assets/images/menu_Icon/Logout.png";
 import styled from "styled-components";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Box,
-  Button,
-  List,
-  SwipeableDrawer,
-} from "@mui/material";
+import { Box, Button, List, SwipeableDrawer } from "@mui/material";
 
 export default function SideMenu() {
   //경로 배열
@@ -106,7 +101,7 @@ export default function SideMenu() {
   );
 
   //브라우저 넓이 계산
-  const [browserWidth, setBrowserWidth] = useState(0);
+  const [browserWidth, setBrowserWidth] = useState(1920);
   const resizeTimer = useRef(null);
 
   useEffect(() => {
@@ -123,7 +118,7 @@ export default function SideMenu() {
     };
   }, [browserWidth]);
 
-  return browserWidth > 1024 ? (
+  return browserWidth > 1350 ? (
     <Container>
       <Logo>WealthTracker</Logo>
       <Line />
@@ -149,26 +144,28 @@ export default function SideMenu() {
     </Container>
   ) : (
     <React.Fragment>
-      <Button
-        onClick={toggleDrawer("top", true)}
-        sx={{ backgroundColor: "black", borderRadius: 0 }}
-      >
-        Menu
-      </Button>
-      <SwipeableDrawer
-        anchor="top"
-        open={menu["top"]}
-        onClose={toggleDrawer("top", false)}
-        onOpen={toggleDrawer("top", true)}
-        PaperProps={{
-          sx: {
-            backgroundColor: "black",
-            borderRadius: 0,
-          },
-        }}
-      >
-        {list("top")}
-      </SwipeableDrawer>
+      <TopMenuContainer>
+        <Button
+          onClick={toggleDrawer("top", true)}
+          sx={{ backgroundColor: "black", borderRadius: 0 }}
+        >
+          Menu
+        </Button>
+        <SwipeableDrawer
+          anchor="top"
+          open={menu["top"]}
+          onClose={toggleDrawer("top", false)}
+          onOpen={toggleDrawer("top", true)}
+          PaperProps={{
+            sx: {
+              backgroundColor: "black",
+              borderRadius: 0,
+            },
+          }}
+        >
+          {list("top")}
+        </SwipeableDrawer>
+      </TopMenuContainer>
     </React.Fragment>
   );
 }
@@ -263,4 +260,12 @@ const LogoutContainer = styled.div`
 const LogoutImg = styled.img`
   width: 1rem;
   height: 1rem;
+`;
+const TopMenuContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: black;
 `;
