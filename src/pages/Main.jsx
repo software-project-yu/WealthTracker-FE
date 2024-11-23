@@ -4,6 +4,7 @@ import Layout from "../components/common/Layout";
 import Logo from "../assets/images/Logo.png";
 import SavingsGoal from "../components/main/SavingsGoal";
 import ConsumptionReport from "../components/main/ConsumptionReport";
+import CurrentConsumptionList from "../components/main/CurrentConsumptionList";
 export default function Main() {
   //   //예시 데이터
   //실제 구현 시 서버API 통신으로 데이터를 받아옵니다.
@@ -115,7 +116,9 @@ export default function Main() {
         </ConsumptionReportContainer>
         <RecentTransactionReportContainer>
           <Title>최근 거래 내역</Title>
-          <Content></Content>
+          <Content>
+            <CurrentConsumptionList />
+          </Content>
         </RecentTransactionReportContainer>
       </GridContainer>
     </Layout>
