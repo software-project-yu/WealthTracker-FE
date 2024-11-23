@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import CircleGraph from "../CircleGraph";
+import CircleGraph from "../CircleGraph.jsx";
 
 export default function SavingsGoal() {
   //윤년 계산을 위한 현재 날짜
@@ -24,7 +24,7 @@ export default function SavingsGoal() {
   const goalAmount = 100; // 목표 금액
   const currentAmount = 85; // 현재 금액
   const chartWidth = 200; // 원하는 가로 크기
-  const chartHeight = 40; // 원하는 높이
+  const chartHeight = 120; // 원하는 높이
   return (
     <Container>
       <TopContainer>
@@ -52,8 +52,8 @@ export default function SavingsGoal() {
         <CircleGraph
           goalAmount={goalAmount}
           currentAmount={currentAmount}
-          chartHeight={chartHeight}
-          chartWidth={chartWidth}
+          height={chartHeight}
+          width={chartWidth}
         />
       </BottomContainer>
     </Container>
@@ -64,29 +64,35 @@ export default function SavingsGoal() {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  width: 90%;
 `;
 
 const TopContainer = styled.div`
   display: flex;
-  border-bottom: 1px;
+  justify-content: space-between;
   padding: 1rem;
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray00};
 `;
 
 const Text = styled.a`
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
   color: ${({ theme }) => theme.colors.black};
 `;
 
 const Select = styled.select`
   border: 1px solid ${({ theme }) => theme.colors.gray07};
   border-radius: 0.5rem;
-  background-color: ${({ theme }) => theme.colors.gray02};
+  background-color: ${({ theme }) => theme.colors.gray08};
+  height: 1.5rem;
+  width: 8rem;
+  text-align: left;
 `;
 
 const BottomContainer = styled.div`
   display: flex;
-  gap: 1rem;
+  padding: 1rem;
+  justify-content: space-between;
 `;
 const CostContainer = styled.div`
   display: flex;
@@ -95,8 +101,10 @@ const CostContainer = styled.div`
 `;
 
 const CostTitle = styled.a`
+  font-size: 1rem;
   color: ${({ theme }) => theme.colors.gray03};
 `;
 const CostNum = styled.a`
+  font-size: 1rem;
   color: ${({ theme }) => theme.colors.black};
 `;

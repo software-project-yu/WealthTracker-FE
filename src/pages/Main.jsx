@@ -5,6 +5,7 @@ import CircleGraph from "../components/CircleGraph";
 import DailyGraph from "../components/DailyGraph";
 import Logo from "../assets/images/Logo.png";
 import SavingsGoal from "../components/main/SavingsGoal";
+import ConsumptionReport from "../components/main/ConsumptionReport";
 export default function Main() {
   //   //예시 데이터
   //실제 구현 시 서버API 통신으로 데이터를 받아옵니다.
@@ -40,7 +41,6 @@ export default function Main() {
       lastWeekTotalCost: 10000,
     },
   ];
-  
 
   //   //지출 페이지 그래프 데이터 예시
   //   const dailyData = [
@@ -93,13 +93,13 @@ export default function Main() {
         </LogoContainer>
         <div>
           <Title>저축 목표</Title>
-          <Content>2ss asdadadasd</Content>
-        </div>
-        <div>
-          <Title>결제 예정</Title>
           <Content>
             <SavingsGoal />
           </Content>
+        </div>
+        <div>
+          <Title>결제 예정</Title>
+          <Content></Content>
         </div>
         <ConsumptionContainer>
           <Title>소비 통계</Title>
@@ -111,13 +111,13 @@ export default function Main() {
         </ConsumptionContainer>
         <ConsumptionReportContainer>
           <Title>소비 분석 리포트</Title>
-          <Content>6</Content>
+          <Content>
+            <ConsumptionReport></ConsumptionReport>
+          </Content>
         </ConsumptionReportContainer>
         <RecentTransactionReportContainer>
           <Title>최근 거래 내역</Title>
-          <Content>
-            
-          </Content>
+          <Content></Content>
         </RecentTransactionReportContainer>
       </GridContainer>
     </Layout>
