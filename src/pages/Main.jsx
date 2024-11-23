@@ -5,6 +5,7 @@ import Logo from "../assets/images/Logo.png";
 import SavingsGoal from "../components/main/SavingsGoal";
 import ConsumptionReport from "../components/main/ConsumptionReport";
 import CurrentConsumptionList from "../components/main/CurrentConsumptionList";
+import PaymentScheduled from "../components/main/PaymentScheduled";
 export default function Main() {
   //   //예시 데이터
   //실제 구현 시 서버API 통신으로 데이터를 받아옵니다.
@@ -98,7 +99,9 @@ export default function Main() {
         </div>
         <div>
           <Title>결제 예정</Title>
-          <Content></Content>
+          <Content>
+            <PaymentScheduled />
+          </Content>
         </div>
         <ConsumptionContainer>
           <Title>소비 통계</Title>

@@ -2,7 +2,7 @@ import LoadingSpinners from "../common/LoadingSpinners";
 import Error from "../common/Error";
 import useFetchData from "../../hooks/useFetch";
 import styled from "styled-components";
-
+//소비 분석 리포트
 export default function ConsumptionReport() {
   const { data, isLoading, error } = useFetchData("/api/feedback");
 
