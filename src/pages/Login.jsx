@@ -74,6 +74,7 @@ function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const API_URL = import.meta.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const savedRememberMe = localStorage.getItem("rememberMe");
@@ -88,7 +89,7 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://3.37.214.150:8080/api/login", {
+      const response = await axios.post(`${API_URL}/api/login`, {
         email,
         password,
       });

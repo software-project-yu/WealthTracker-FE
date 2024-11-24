@@ -105,7 +105,7 @@ function Signup() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // 버튼 비활성화 상태
   const [buttonLabel, setButtonLabel] = useState("인증번호 받기"); // 버튼 텍스트
   const [isResend, setIsResend] = useState(false); // 인증번호 재발급 여부
-
+  const API_URL = import.meta.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -119,7 +119,7 @@ function Signup() {
 
   const sendVerificationCode = async () => {
     try {
-      const response = await axios.get("http://3.37.214.150:8080/api/verify", {
+      const response = await axios.get(`${API_URL}/api/verify`, {
         params: { email }, // GET 요청의 쿼리 파라미터
       });
       if (response.status === 200) {
@@ -132,7 +132,7 @@ function Signup() {
   
   const resendVerificationCode = async () => {
     try {
-      const response = await axios.post("http://3.37.214.150:8080/api/resend-code", { email });
+      const response = await axios.post(`${API_URL}/api/resend-code`, { email });
       if (response.status === 200) {
         alert("인증번호가 재발급되었습니다.");
       }
@@ -214,7 +214,7 @@ function Signup() {
     
   
     try {
-      const response = await axios.post("/api/signup", {
+      const response = await axios.post(`${API_URL}/api/signup`, {
         name,
         nickname,
         email,

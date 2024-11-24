@@ -70,8 +70,8 @@ export default function FindPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
   const navigate = useNavigate();
+  const API_URL = import.meta.env.REACT_APP_API_URL;
 
-  // 이메일 유효성 검사
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -85,7 +85,7 @@ export default function FindPassword() {
     }
     try {
       setLoading(true);
-      const response = await axios.get("http://3.37.214.150:8080/api/reset-password", {
+      const response = await axios.get(`${API_URL}/api/reset-password`, {
         params: { email },
       });
       if (response.status === 200) {
@@ -108,7 +108,7 @@ export default function FindPassword() {
     }
     try {
       setLoading(true);
-      const response = await axios.post("http://3.37.214.150:8080/api/confirm-reset-password", {
+      const response = await axios.post(`${API_URL}/api/confirm-reset-password`, {
         email,
         resetCode,
       });
@@ -133,7 +133,7 @@ export default function FindPassword() {
     }
     try {
       setLoading(true);
-      const response = await axios.post("http://3.37.214.150:8080/api/reset-password", {
+      const response = await axios.post(`${API_URL}/api/reset-password`, {
         email,
         newPassword,
       });

@@ -6,12 +6,12 @@ export const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #e8e8e8; /* 회색 배경 */
+  background-color: ${({theme})=>theme.colors.gray00}; , /* 회색 배경 */
   width: 100%;
 `;
 
 export const Title = styled.h1`
-  color: #007bff; /* WealthTracker 파란색 */
+  color:${({theme})=>theme.colors.blue}; /* WealthTracker 파란색 */
   margin-bottom: 40px;
 `;
 
@@ -21,7 +21,7 @@ export const Form = styled.form`
   align-items: center;
   width: 300px; /* 고정된 너비 유지 */
   padding: 20px;
-  background-color: #e8e8e8;
+  background-color: ${({theme})=>theme.colors.gray00};
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
 `;
@@ -48,7 +48,7 @@ export const Button = styled.button`
 export const OrText = styled.div`
   margin: 20px 0;
   font-size: 16px;
-  color: #919eab;
+  color: ${({theme})=>theme.colors.gray04};
 `;
 
 export const InputWrapper = styled.div`
