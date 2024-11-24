@@ -13,10 +13,10 @@ export default function BackGround() {
 }
 const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.gray00};
-  width: 100%;
-  height: 1.5rem; 
+  width: auto;
+  height: 3rem;
   display: flex;
-  align-items:center;
+  align-items: center;
   padding: 2rem;
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray02};
 `;
