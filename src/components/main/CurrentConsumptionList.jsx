@@ -4,13 +4,14 @@ import Error from "../common/Error";
 import LoadingSpinners from "../common/LoadingSpinners";
 //최근 거래 내역 컴포넌트
 export default function CurrentConsumptionList() {
-  const { data, error, isLoading } = useFetchData("/api/expend/list");
+  const { arr, error, isLoading } = useFetchData("/api/expend/recent");
+
   if (error) return <Error />;
   if (isLoading) return <LoadingSpinners />;
   return (
     <Container>
-      {data &&
-        data.map((item) => (
+      {arr &&
+        arr.map((item) => (
           <BoxContainer key={item.expendId}>
             <LeftContainer>
               <BigText>{item.expendName}</BigText>

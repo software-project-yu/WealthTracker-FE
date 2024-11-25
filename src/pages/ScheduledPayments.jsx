@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Layout from "../components/Layout";
+import Layout from "../components/common/Layout";
 import styled from "styled-components";
 
 export default function ScheduledPayments() {
@@ -54,8 +54,8 @@ export default function ScheduledPayments() {
 }
 
 const ScheduledPaymentsContainer = styled.div`
-  width: 1104px
-  height: 880px
+  width: 1104px;
+  height: 880px;
   margin: 20px auto;
   top: 164px;
   left: 304px;
