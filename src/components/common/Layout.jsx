@@ -28,7 +28,6 @@ const SubContainer = styled.div`
   min-width: 0;
   flex: 1;
 `;
-
 const Sub = styled.div`
   display: flex;
   flex-direction: column;

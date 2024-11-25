@@ -1,6 +1,5 @@
 
 import { Routes, Route } from "react-router-dom";
-
 import Main from "./pages/Main";
 import Transactions from "./pages/Transactions";
 import ScheduledPayments from "./pages/ScheduledPayments";

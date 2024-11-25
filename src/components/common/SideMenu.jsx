@@ -185,7 +185,7 @@ const Container = styled.div`
 const Logo = styled.h1`
   color: ${({ theme }) => theme.colors.white};
   align-items: center;
-  font-size: 2rem;
+  font-size: 1.8rem; 
   font-weight: 800;
   padding: 2rem 0;
 `;
