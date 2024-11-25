@@ -1,19 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import defaultProfile from "../assets/images/profile.jpg";
-import icon1 from "../assets/images/menu_Icon/icon1.png";
-import icon1_white from "../assets/images/menu_Icon/icon1-white.png";
-import icon2 from "../assets/images/menu_Icon/icon2.png";
-import icon2_white from "../assets/images/menu_Icon/icon2-white.png";
-import icon3 from "../assets/images/menu_Icon/icon3.png";
-import icon3_white from "../assets/images/menu_Icon/icon3-white.png";
-import icon4 from "../assets/images/menu_Icon/icon4.png";
-import icon4_white from "../assets/images/menu_Icon/icon4-white.png";
-import icon5 from "../assets/images/menu_Icon/icon5.png";
-import icon5_white from "../assets/images/menu_Icon/icon5-white.png";
-import icon6 from "../assets/images/menu_Icon/icon6.png";
-import icon6_white from "../assets/images/menu_Icon/icon6-white.png";
-import LogoutIcon from "../assets/images/menu_Icon/Logout.png";
+import defaultProfile from "../../assets/images/profile.jpg";
+import icon1 from "../../assets/images/menu_Icon/icon1.png";
+import icon1_white from "../../assets/images/menu_Icon/icon1-white.png";
+import icon2 from "../../assets/images/menu_Icon/icon2.png";
+import icon2_white from "../../assets/images/menu_Icon/icon2-white.png";
+import icon3 from "../../assets/images/menu_Icon/icon3.png";
+import icon3_white from "../../assets/images/menu_Icon/icon3-white.png";
+import icon4 from "../../assets/images/menu_Icon/icon4.png";
+import icon4_white from "../../assets/images/menu_Icon/icon4-white.png";
+import icon5 from "../../assets/images/menu_Icon/icon5.png";
+import icon5_white from "../../assets/images/menu_Icon/icon5-white.png";
+import icon6 from "../../assets/images/menu_Icon/icon6.png";
+import icon6_white from "../../assets/images/menu_Icon/icon6-white.png";
+import LogoutIcon from "../../assets/images/menu_Icon/Logout.png";
 import styled from "styled-components";
+import React, { useEffect, useRef, useState } from "react";
+import { Box, Button, List, SwipeableDrawer } from "@mui/material";
 
 export default function SideMenu() {
   //경로 배열
@@ -64,7 +66,59 @@ export default function SideMenu() {
     }
   };
 
-  return (
+  //햄버거 메뉴
+  const [menu, setMenu] = useState({ top: false });
+
+  const toggleDrawer = (anchor, open) => (e) => {
+    if (e && e.type == "keydown" && (e.key == "Tab" || e.key == "Shift")) {
+      return;
+    }
+    setMenu({ ...menu, [anchor]: open });
+  };
+  const list = (anchor) => (
+    <Box
+      sx={{ width: "auto", maxWidth: "100%" }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        {pageName.map((item, idx) => (
+          <MenuItemContainer
+            key={idx}
+            onClick={() => onClickMenuItem(item.page)}
+          >
+            <MenuItemImg
+              src={item.imageSrc}
+              data-white-src={item.imageSrcWhite}
+              alt={`${item.imageSrc} icon`}
+            />
+            <MenuItemText>{item.name}</MenuItemText>
+          </MenuItemContainer>
+        ))}
+      </List>
+    </Box>
+  );
+
+  //브라우저 넓이 계산
+  const [browserWidth, setBrowserWidth] = useState(1920);
+  const resizeTimer = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (resizeTimer.current !== null) return;
+      resizeTimer.current = setTimeout(() => {
+        resizeTimer.current = null;
+        setBrowserWidth(window.innerWidth);
+      }, 200);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [browserWidth]);
+
+  return browserWidth > 1350 ? (
     <Container>
       <Logo>WealthTracker</Logo>
       <Line />
@@ -88,6 +142,31 @@ export default function SideMenu() {
         <LogoutText onClick={onClickLogout}>로그아웃</LogoutText>
       </LogoutContainer>
     </Container>
+  ) : (
+    <React.Fragment>
+      <TopMenuContainer>
+        <Button
+          onClick={toggleDrawer("top", true)}
+          sx={{ backgroundColor: "black", borderRadius: 0 }}
+        >
+          Menu
+        </Button>
+        <SwipeableDrawer
+          anchor="top"
+          open={menu["top"]}
+          onClose={toggleDrawer("top", false)}
+          onOpen={toggleDrawer("top", true)}
+          PaperProps={{
+            sx: {
+              backgroundColor: "black",
+              borderRadius: 0,
+            },
+          }}
+        >
+          {list("top")}
+        </SwipeableDrawer>
+      </TopMenuContainer>
+    </React.Fragment>
   );
 }
 
@@ -100,6 +179,8 @@ const Container = styled.div`
   align-items: center;
   padding: 0 2rem;
   gap: 1rem;
+  position: sticky;
+  top: 0;
 `;
 const Logo = styled.h1`
   color: ${({ theme }) => theme.colors.white};
@@ -179,4 +260,12 @@ const LogoutContainer = styled.div`
 const LogoutImg = styled.img`
   width: 1rem;
   height: 1rem;
+`;
+const TopMenuContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: black;
 `;
