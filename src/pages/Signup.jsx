@@ -61,16 +61,31 @@ const ButtonWrapper = styled.div`
 `;
 
 const InputWithTimerWrapper = styled.div`
-  position: relative; /* Timer 위치를 Input 안으로 이동 */
+  position: relative; /* Timer와 버튼 위치를 Input 안으로 이동 */
   display: flex;
   align-items: center;
+`;
+
+const VerifyButton = styled.button`
+  position: absolute;
+  right: 10px; /* Input 내부 우측에 위치 */
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px 10px;
+  border: 1px solid #007BFF;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color:transparent;
+  color:#007BFF;
+  cursor: pointer;
+  font-size: 12px;
 `;
 
 const Timer = styled.span`
   font-size: 12px;
   color: #E92C2C;
   position: absolute;
-  right: 10px; /* Input 내부 우측에 위치 */
+  right: 65px; /* Input 내부 우측에 위치 */
   top: 50%;
   transform: translateY(-50%);
 `;
@@ -105,7 +120,7 @@ function Signup() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // 버튼 비활성화 상태
   const [buttonLabel, setButtonLabel] = useState("인증번호 받기"); // 버튼 텍스트
   const [isResend, setIsResend] = useState(false); // 인증번호 재발급 여부
-  const API_URL = import.meta.env.REACT_APP_API_URL;
+  const API_URL = import.meta.env.VITE_SERVER_URL;
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -119,16 +134,23 @@ function Signup() {
 
   const sendVerificationCode = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/verify`, {
-        params: { email }, // GET 요청의 쿼리 파라미터
+      const response = await axios.post(`${API_URL}/api/send-code`, {
+        email, // POST 요청 본문에 email 전달
       });
       if (response.status === 200) {
         alert("인증번호가 발송되었습니다.");
+      } else {
+        alert("인증번호 발송에 실패했습니다. 다시 시도해 주세요.");
       }
     } catch (error) {
-      alert("인증번호 요청 중 오류가 발생했습니다.");
+      if (error.response) {
+        alert(`오류: ${error.response.data.message}`);
+      } else {
+        alert("인증번호 요청 중 서버 오류가 발생했습니다.");
+      }
     }
   };
+  
   
   const resendVerificationCode = async () => {
     try {
@@ -149,9 +171,9 @@ function Signup() {
   
     // 버튼 상태에 따라 API 호출
     if (!isResend) {
-      await sendVerificationCode(); // GET 요청
+      await sendVerificationCode();
     } else {
-      await resendVerificationCode(); // POST 요청
+      await resendVerificationCode();
     }
   
     setIsTimerActive(true);
@@ -233,6 +255,36 @@ function Signup() {
       }
     }
   };
+
+  const verifyCertificationCode = async () => {
+  if (certification.trim() === "") {
+    alert("인증코드를 입력해 주세요.");
+    return;
+  }
+
+  try {
+    const response = await axios.get(`${API_URL}/api/verify`, {
+      params: {
+        email,
+        code: certification, // 쿼리 매개변수로 전달
+      },
+    });
+
+    if (response.status === 200) {
+      alert("인증이 성공적으로 완료되었습니다.");
+    } else {
+      alert("인증에 실패했습니다. 다시 시도해 주세요.");
+    }
+  } catch (error) {
+    if (error.response) {
+      alert(`인증 실패: ${error.response.data.message}`);
+    } else {
+      alert("서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+    }
+  }
+};
+
+  
   
 
   return (
@@ -250,7 +302,7 @@ function Signup() {
           <label>닉네임</label>
           <Input
             type="text"
-            placeholder="닉네임을 입력해 주세요."
+            placeholder="닉네임을 입력해 주세요.(영어+숫자6~15자)"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
           />
@@ -273,14 +325,15 @@ function Signup() {
 
           <label>인증코드</label>
           <InputWithTimerWrapper>
-            <Input
-              type="text"
-              placeholder="인증코드를 입력해 주세요."
-              value={certification}
-              onChange={(e) => setCertification(e.target.value)}
-            />
-            {isTimerActive && <Timer>{formatTime(timer)}</Timer>} {/* 타이머 표시 */}
-          </InputWithTimerWrapper>
+  <Input
+    type="text"
+    placeholder="인증코드를 입력해 주세요."
+    value={certification}
+    onChange={(e) => setCertification(e.target.value)}
+  />
+  {isTimerActive && <Timer>{formatTime(timer)}</Timer>} {/* 타이머 표시 */}
+  <VerifyButton onClick={verifyCertificationCode}>확인</VerifyButton>
+</InputWithTimerWrapper>
         </div>
 
         <InputWrapper>

@@ -74,7 +74,7 @@ function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const API_URL = import.meta.env.REACT_APP_API_URL;
+  const API_URL = import.meta.env.VITE_SERVER_URL;
 
   useEffect(() => {
     const savedRememberMe = localStorage.getItem("rememberMe");
@@ -88,6 +88,7 @@ function Login() {
   }, []);
 
   const handleLogin = async () => {
+    console.log(`${API_URL}`);
     try {
       const response = await axios.post(`${API_URL}/api/login`, {
         email,

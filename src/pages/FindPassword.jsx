@@ -70,7 +70,7 @@ export default function FindPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
   const navigate = useNavigate();
-  const API_URL = import.meta.env.REACT_APP_API_URL;
+  const API_URL = import.meta.env.VITE_SERVER_URL;
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,8 +85,8 @@ export default function FindPassword() {
     }
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/api/reset-password`, {
-        params: { email },
+      const response = await axios.post(`${API_URL}/api/reset-password`, {
+        email,
       });
       if (response.status === 200) {
         alert("재설정 코드가 이메일로 발송되었습니다.");
