@@ -13,15 +13,17 @@ export default function BackGround() {
 }
 const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.gray00};
-  width: 100%;
+  width: 10%;
   height: 3rem;
   display: flex;
-  align-items:center;
+  align-items: center;
   padding: 2rem;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray02};
 `;
 const ArrowImage = styled.img`
   width: 1rem;
   height: 1rem;
+  margin-right: 8px;
 `;
 const DateText = styled.a`
   color: ${({ theme }) => theme.colors.gray03};

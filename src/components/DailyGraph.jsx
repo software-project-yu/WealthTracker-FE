@@ -52,10 +52,7 @@ const DailyGraph = ({ data }) => {
             borderRadius: "4px",
           }}
         >
-          <strong>
-             {indexValue}
-          </strong>
-          :{value.toLocaleString()} 원
+          <strong>{indexValue}</strong>:{value.toLocaleString()} 원
         </div>
       )}
       legends={[
