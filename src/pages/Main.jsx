@@ -1,85 +1,16 @@
+//메인 페이지
 import styled from "styled-components";
-import Graph from "../components/common/Graph";
 import Layout from "../components/common/Layout";
 import Logo from "../assets/images/Logo.png";
 import SavingsGoal from "../components/main/SavingsGoal";
 import ConsumptionReport from "../components/main/ConsumptionReport";
+import CurrentConsumptionList from "../components/main/CurrentConsumptionList";
+import PaymentScheduled from "../components/main/PaymentScheduled";
+import ConsumptionStatics from "../components/main/ConsumptionStatics";
+import { MdArrowForwardIos } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 export default function Main() {
-  //   //예시 데이터
-  //실제 구현 시 서버API 통신으로 데이터를 받아옵니다.
-  const data = [
-    {
-      month: 11,
-      weekNum: 1,
-      thisWeekTotalCost: 20046,
-      lastWeekTotalCost: 2120,
-    },
-    {
-      month: 11,
-      weekNum: 2,
-      thisWeekTotalCost: 11110,
-      lastWeekTotalCost: 1120,
-    },
-    {
-      month: 11,
-      weekNum: 3,
-      thisWeekTotalCost: 12000,
-      lastWeekTotalCost: 30069,
-    },
-    {
-      month: 11,
-      weekNum: 4,
-      thisWeekTotalCost: 22212,
-      lastWeekTotalCost: 10022,
-    },
-    {
-      month: 11,
-      weekNum: 5,
-      thisWeekTotalCost: 12100,
-      lastWeekTotalCost: 10000,
-    },
-  ];
-
-  //   //지출 페이지 그래프 데이터 예시
-  //   const dailyData = [
-  //     { dayNum: 26, costNum: 12000 },
-  //     { dayNum: 27, costNum: 15000 },
-  //     { dayNum: 28, costNum: 13000 },
-  //     { dayNum: 29, costNum: 10000 },
-  //     { dayNum: 30, costNum: 11000 },
-  //     { dayNum: 31, costNum: 14000 },
-  //     { dayNum: 1, costNum: 16000 },
-  //     { dayNum: 2, costNum: 9000 },
-  //     { dayNum: 3, costNum: 12000 },
-  //     { dayNum: 4, costNum: 17000 },
-  //     { dayNum: 5, costNum: 13000 },
-  //     { dayNum: 6, costNum: 10000 },
-  //     { dayNum: 7, costNum: 100000 },
-  //     { dayNum: 8, costNum: 115000 },
-  //   ];
-  //   return (
-  //     <Layout>
-  //       <h1>Example</h1>
-  //       <Container>
-  //         <Graph data={data} />
-  //       </Container>
-  //       <CircleGraph
-  //         goalAmount={goalAmount}
-  //         currentAmount={currentAmount}
-  //         width={chartWidth}
-  //         height={chartHeight}
-  //       />
-  //       <Container>
-  //         <DailyGraph data={dailyData} />
-  //       </Container>
-  //     </Layout>
-  //   );
-  // }
-  // const Container = styled.div`
-  //   height: 20rem;
-  //   width: 60rem;
-  // `;
-
+  const nav = useNavigate();
   return (
     <Layout>
       <GridContainer>
@@ -96,26 +27,43 @@ export default function Main() {
           </Content>
         </div>
         <div>
-          <Title>결제 예정</Title>
-          <Content></Content>
+          <TopContainer>
+            <Title>결제 예정</Title>
+            <PlusContainer onClick={() => nav("/ScheduledPayments")}>
+              <PlusText>더 보기</PlusText>
+              <MdArrowForwardIos size={12.8} color="#878787" />
+            </PlusContainer>
+          </TopContainer>
+          <Content>
+            <PaymentScheduled />
+          </Content>
         </div>
         <ConsumptionContainer>
           <Title>소비 통계</Title>
           <Content>
-            <GraphContainer>
-              <Graph data={data} />
-            </GraphContainer>
+            <ConsumptionStatics />
           </Content>
         </ConsumptionContainer>
         <ConsumptionReportContainer>
-          <Title>소비 분석 리포트</Title>
+          <SubTitleContainer>
+            <Title>소비 분석 리포트</Title>
+            <SmallText>by Gemini(Google AI)</SmallText>
+          </SubTitleContainer>
           <Content>
             <ConsumptionReport></ConsumptionReport>
           </Content>
         </ConsumptionReportContainer>
         <RecentTransactionReportContainer>
-          <Title>최근 거래 내역</Title>
-          <Content></Content>
+          <TopContainer>
+            <Title>최근 거래 내역</Title>
+            <PlusContainer onClick={() => nav("/Transactions")}>
+              <PlusText>더 보기</PlusText>
+              <MdArrowForwardIos size={12.8} color="#878787" />
+            </PlusContainer>
+          </TopContainer>
+          <Content>
+            <CurrentConsumptionList />
+          </Content>
         </RecentTransactionReportContainer>
       </GridContainer>
     </Layout>
@@ -142,7 +90,6 @@ const ConsumptionReportContainer = styled.div`
 const RecentTransactionReportContainer = styled.div`
   grid-area: 2/3/4/3;
   display: flex;
-  margin-bottom: 0rem;
   height: 100%;
 `;
 
@@ -150,6 +97,8 @@ const Title = styled.h2`
   font-size: 1.3rem;
   font-weight: 400;
   color: ${({ theme }) => theme.colors.gray06};
+  padding: 0.5rem;
+  flex-direction: start;
 `;
 const Content = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
@@ -186,7 +135,7 @@ const GridContainer = styled.div`
     height: 100%;
   }
   //반응형 1024px 기준
-  @media (max-width: 1024px) {
+  @media (max-width: 1350px) {
     height: auto;
     grid-template-columns: 1fr;
     grid-template-rows: auto;
@@ -205,13 +154,29 @@ const GridContainer = styled.div`
   }
 `;
 
-const GraphContainer = styled.div`
-  width: 100%;
-  max-width: 45rem;
-  height: 100%;
-  max-height: 15rem;
+const TopContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  margin: auto;
+  width: 100%;
+`;
+const PlusContainer = styled.div`
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 0 0.5rem;
+`;
+const PlusText = styled.div`
+  font-size: 0.8rem;
+  color: ${({ theme }) => theme.colors.gray06};
+`;
+
+const SubTitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const SmallText = styled.a`
+  font-size: 0.8rem;
+  color: ${({ theme }) => theme.colors.gray06};
 `;
