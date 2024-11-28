@@ -11,19 +11,24 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useFetchTrans from "../hooks/useFetchTrans";
 import {
   createExpend,
-  createIncome,
   updateExpend,
-  updateIncome,
   deleteExpend,
+  fetchExpendList
+} from "../api/expendAPI";
+
+import {
+  createIncome,
+  updateIncome,
   deleteIncome,
-} from "../api/api";
+  fetchIncomeList
+} from "../api/incomeAPI";
 
 export default function Transactions() {
   const [activeTab, setActiveTab] = useState("전체");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState(null);
+  const [modalType, setModalType] = useState("expend");
   const [editingTransaction, setEditingTransaction] = useState(null);
 
   const queryClient = useQueryClient();
@@ -31,10 +36,10 @@ export default function Transactions() {
   const currentMonth = currentDate.getMonth() + 1;
 
   const { data: transactions, isLoading: isExpendLoading, error: expendError } =
-    useFetchTrans("/api/expend/list", { month: currentMonth });
+  useFetchTrans("/api/expend/list", { month: currentMonth });
 
   const { data: incomeList, isLoading: isIncomeLoading, error: incomeError } =
-    useFetchTrans("/api/income/list", { month: currentMonth });
+  useFetchTrans("/api/income/list", { month: currentMonth });
 
   const addTransaction = useMutation({
     mutationFn: (data) =>
@@ -139,8 +144,7 @@ export default function Transactions() {
                 <TransactionList
                   transactions={displayedTransactions}
                   currentPage={currentPage}
-                  itemsPerPage={itemsPerPage}
-                  hideEditButtons={activeTab !== "전체"} 
+                  itemsPerPage={itemsPerPage} 
                   onEdit={(transaction) =>
                     handleOpenModal(transaction.incomeId ? "income" : "expense", transaction)
                   }

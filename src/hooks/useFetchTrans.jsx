@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import api from "../api/api";
+import { api } from "../api/api";
 
 const useFetchTrans = (url, params) => {
   return useQuery({
@@ -9,7 +9,9 @@ const useFetchTrans = (url, params) => {
         const response = await api.get(url, { params });
         return response.data;
       } catch (error) {
-        console.error("API 요청 실패:", error);
+        if (error.response?.status === 500) {
+          console.error("서버 에러:", error.response.data);
+        }
         throw error;
       }
     },

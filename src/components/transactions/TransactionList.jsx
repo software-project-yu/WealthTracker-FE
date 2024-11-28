@@ -6,7 +6,6 @@ export default function TransactionList({
   transactions,
   currentPage,
   itemsPerPage,
-  hideEditButtons,
   onEdit,
   onDelete,
 }) {
@@ -26,7 +25,7 @@ export default function TransactionList({
           <Th>분류</Th>
           <Th>자산</Th>
           <Th>내용</Th>
-          {!hideEditButtons && <Th>편집</Th>}
+          <Th>편집</Th>
         </tr>
       </thead>
       <tbody>
@@ -48,23 +47,21 @@ export default function TransactionList({
               <Td $isBold>
                 {isIncome ? transaction.incomeName : transaction.expendName}
               </Td>
-              {!hideEditButtons && (
-                <Td>
-                  <Button $edit onClick={() => onEdit(transaction)}>
-                    수정
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      onDelete(
-                        isIncome ? transaction.incomeId : transaction.expendId,
-                        isIncome ? "income" : "expense"
-                      )
-                    }
-                  >
-                    삭제
-                  </Button>
-                </Td>
-              )}
+              <Td>
+                <Button $edit onClick={() => onEdit(transaction)}>
+                  수정
+                </Button>
+                <Button
+                  onClick={() =>
+                    onDelete(
+                      isIncome ? transaction.incomeId : transaction.expendId,
+                      isIncome ? "income" : "expense"
+                    )
+                  }
+                >
+                  삭제
+                </Button>
+              </Td>
             </Tr>
           );
         })}
