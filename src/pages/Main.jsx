@@ -44,7 +44,10 @@ export default function Main() {
           </Content>
         </ConsumptionContainer>
         <ConsumptionReportContainer>
-          <Title>소비 분석 리포트</Title>
+          <SubTitleContainer>
+            <Title>소비 분석 리포트</Title>
+            <SmallText>by Gemini(Google AI)</SmallText>
+          </SubTitleContainer>
           <Content>
             <ConsumptionReport></ConsumptionReport>
           </Content>
@@ -164,6 +167,15 @@ const PlusContainer = styled.div`
   gap: 0 0.5rem;
 `;
 const PlusText = styled.div`
+  font-size: 0.8rem;
+  color: ${({ theme }) => theme.colors.gray06};
+`;
+
+const SubTitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const SmallText = styled.a`
   font-size: 0.8rem;
   color: ${({ theme }) => theme.colors.gray06};
 `;

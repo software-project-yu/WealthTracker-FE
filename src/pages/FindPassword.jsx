@@ -1,0 +1,218 @@
+import React, { useState } from "react";
+import {
+  Wrapper,
+  Title,
+  Form,
+  Button,
+} from "../components/Login";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const Input = styled.input`
+  width: 85%;
+  padding: 10px;
+  padding-right: 30px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 10px 0 30px 0;
+  background: transparent;
+  color: #000;
+  outline: none;
+
+  ::placeholder {
+    color: #aaa;
+  }
+
+  &:focus {
+    border: 1px solid black;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+`;
+
+const Findtext = styled.div`
+  font-size: 14px;
+  color: #919eab;
+`;
+
+const PopupOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const Popup = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+`;
+
+const PopupButton = styled(Button)`
+  margin-top: 20px;
+`;
+
+export default function FindPassword() {
+  const [email, setEmail] = useState("");
+  const [showCodePopup, setShowCodePopup] = useState(false);
+  const [showResetPopup, setShowResetPopup] = useState(false);
+  const [resetCode, setResetCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [loading, setLoading] = useState(false); // 로딩 상태 추가
+  const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_SERVER_URL;
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // 재설정 코드 요청 API 호출
+  const handleRequestCode = async () => {
+    if (!email || !validateEmail(email)) {
+      alert("유효한 이메일 주소를 입력해주세요!");
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await axios.post(`${API_URL}/api/reset-password`, {
+        email,
+      });
+      if (response.status === 200) {
+        alert("재설정 코드가 이메일로 발송되었습니다.");
+        setShowCodePopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("재설정 코드 요청 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 재설정 코드 확인 API 호출
+  const handleVerifyCode = async () => {
+    if (!resetCode) {
+      alert("재설정 코드를 입력해주세요!");
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await axios.post(`${API_URL}/api/confirm-reset-password`, {
+        email,
+        resetCode,
+      });
+      if (response.status === 200) {
+        alert("코드가 확인되었습니다. 새 비밀번호를 입력하세요.");
+        setShowCodePopup(false);
+        setShowResetPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("재설정 코드 확인 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 비밀번호 재설정 API 호출
+  const handleResetPassword = async () => {
+    if (!newPassword) {
+      alert("새 비밀번호를 입력해주세요!");
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await axios.post(`${API_URL}/api/reset-password`, {
+        email,
+        newPassword,
+      });
+      if (response.status === 200) {
+        alert("비밀번호가 재설정되었습니다!");
+        setShowResetPopup(false);
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("비밀번호 재설정 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <Wrapper>
+        <Title>WealthTracker</Title>
+        <h2>비밀번호를 잊으셨나요?</h2>
+        <Findtext>비밀번호 재설정 코드를 받으려면</Findtext>
+        <Findtext>이메일 주소를 입력하세요.</Findtext>
+        <Form>
+          <div>
+            <label>이메일 주소</label>
+            <Input
+              type="email"
+              placeholder="yeungnam@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <Button
+            className="login"
+            type="button"
+            onClick={handleRequestCode}
+            disabled={loading}
+          >
+            {loading ? "처리 중..." : "비밀번호 재설정"}
+          </Button>
+        </Form>
+      </Wrapper>
+
+      {/* 재설정 코드 팝업 */}
+      {showCodePopup && (
+        <PopupOverlay>
+          <Popup>
+            <h3>재설정 코드 입력</h3>
+            <Input
+              type="text"
+              placeholder="재설정 코드를 입력하세요"
+              value={resetCode}
+              onChange={(e) => setResetCode(e.target.value)}
+            />
+            <PopupButton onClick={handleVerifyCode} disabled={loading}>
+              {loading ? "처리 중..." : "확인"}
+            </PopupButton>
+          </Popup>
+        </PopupOverlay>
+      )}
+
+      {/* 비밀번호 재설정 팝업 */}
+      {showResetPopup && (
+        <PopupOverlay>
+          <Popup>
+            <h3>새 비밀번호 입력</h3>
+            <Input
+              type="password"
+              placeholder="새 비밀번호를 입력하세요"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <PopupButton onClick={handleResetPassword} disabled={loading}>
+              {loading ? "처리 중..." : "비밀번호 재설정"}
+            </PopupButton>
+          </Popup>
+        </PopupOverlay>
+      )}
+    </>
+  );
+}
