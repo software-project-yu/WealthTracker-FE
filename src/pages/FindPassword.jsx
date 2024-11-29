@@ -78,7 +78,7 @@ const [code, setResetCode] = useState("");
 const [newPassword, setNewPassword] = useState("");
 const [loading, setLoading] = useState(false); // 로딩 상태 추가
 const navigate = useNavigate();
-  
+const API_URL = import.meta.env.VITE_SERVER_URL;
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -93,7 +93,7 @@ const navigate = useNavigate();
     }
     try {
       setLoading(true);
-      const response = await axios.post("http://3.37.214.150:8080/api/reset-password", {
+      const response = await axios.post(`${API_URL}/api/reset-password`, {
         email,
       });
       if (response.status === 200) {
@@ -120,7 +120,7 @@ const navigate = useNavigate();
       setLoading(true);
   
       // axios.get에서 쿼리 파라미터를 전달하는 방식
-      const response = await axios.get("http://3.37.214.150:8080/api/verify", {
+      const response = await axios.get(`${API_URL}/api/verify`, {
         params: {
           email,
           code,
@@ -149,7 +149,7 @@ const navigate = useNavigate();
     }
     try {
       setLoading(true);
-      const response = await axios.post("http://3.37.214.150:8080/api/confirm-reset-password", {
+      const response = await axios.post(`${API_URL}/api/confirm-reset-password`, {
         code,
         newPassword,
       });

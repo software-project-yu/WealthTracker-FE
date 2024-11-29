@@ -8,7 +8,6 @@ import {
 } from "../components/Login";
 import styled from "styled-components";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { BsChatFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const Input = styled.input`
@@ -133,7 +132,7 @@ function Signup() {
 
   const sendVerificationCode = async () => {
     try {
-      const response = await axios.post("http://3.37.214.150:8080/api/send-code", {
+      const response = await axios.post(`${API_URL}/api/send-code`, {
         email, // POST 요청 본문에 email 전달
       });
       if (response.status === 200) {
@@ -153,7 +152,7 @@ function Signup() {
   
   const resendVerificationCode = async () => {
     try {
-      const response = await axios.post("http://3.37.214.150:8080/api/resend-code", { email });
+      const response = await axios.post(`${API_URL}/api/resend-code`, { email });
       if (response.status === 200) {
         alert("인증번호가 재발급되었습니다.");
       }
@@ -235,7 +234,7 @@ function Signup() {
     
   
     try {
-      const response = await axios.post("http://3.37.214.150:8080/api/signup", {
+      const response = await axios.post(`${API_URL}/api/signup`, {
         name,
         nickName,
         email,
@@ -262,7 +261,7 @@ function Signup() {
   }
 
   try {
-    const response = await axios.get("http://3.37.214.150:8080/api/verify", {
+    const response = await axios.get(`${API_URL}/api/verify`, {
       params: {
         email,
         code: certification, // 쿼리 매개변수로 전달

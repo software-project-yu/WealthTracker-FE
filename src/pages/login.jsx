@@ -89,7 +89,7 @@ function Login() {
   const handleLogin = async () => {
     console.log(`${API_URL}`);
     try {
-      const response = await axios.post("http://3.37.214.150:8080/api/login", {
+      const response = await axios.post(`${API_URL}/api/login`, {
         email,
         password,
       });
