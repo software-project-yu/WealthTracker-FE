@@ -16,6 +16,7 @@ import LogoutIcon from "../../assets/images/menu_Icon/Logout.png";
 import styled from "styled-components";
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Button, List, SwipeableDrawer } from "@mui/material";
+import axios from "axios";
 
 export default function SideMenu() {
   //경로 배열
@@ -55,6 +56,7 @@ export default function SideMenu() {
   const nav = useNavigate();
   //메뉴 버튼 클릭 시
   const onClickMenuItem = (src) => {
+    
     nav(src);
   };
   //로그아웃

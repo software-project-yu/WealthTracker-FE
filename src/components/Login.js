@@ -45,14 +45,10 @@ export const Button = styled.button`
       ? "black" // 카카오 버튼의 글자색을 검정색으로 변경
       : "#007bff"};
 `;
-export const OrText = styled.div`
-  margin: 20px 0;
-  font-size: 16px;
-  color: ${({theme})=>theme.colors.gray04};
-`;
-
 export const InputWrapper = styled.div`
 position: relative;
 width: 100%; /* 부모의 너비에 맞추어 100% 설정 */
 margin-bottom: 15px;
 `;
+
+
