@@ -1,0 +1,124 @@
+import styled from "styled-components";
+import CircleGraph from "../common/CircleGraph.jsx";
+import useFetchData from "../../hooks/useFetch.jsx";
+import { useState } from "react";
+import Error from "../common/Error.jsx";
+import LoadingSpinners from "../common/LoadingSpinners.jsx";
+//저축 목표
+export default function SavingsGoal() {
+  //윤년 계산을 위한 현재 날짜
+  const today = new Date().getFullYear();
+  //선택한 월
+  const [selectMonth, setSelectMonth] = useState(new Date().getMonth());
+  const options = [
+    { month: 1, value: "1.1 ~ 1.31" },
+    { month: 2, value: today % 4 == 0 ? "2.1 ~ 2.29" : "2.1 ~ 2.28" },
+    { month: 3, value: "3.1 ~ 3.31" },
+    { month: 4, value: "4.1 ~ 4.30" },
+    { month: 5, value: "5.1 ~ 5.31" },
+    { month: 6, value: "6.1 ~ 6.30" },
+    { month: 7, value: "7.1 ~ 7.31" },
+    { month: 8, value: "8.1 ~ 8.31" },
+    { month: 9, value: "9.1 ~ 9.30" },
+    { month: 10, value: "10.1 ~ 10.31" },
+    { month: 11, value: "11.1 ~ 11.30" },
+    { month: 12, value: "12.1 ~ 12.31" },
+  ];
+
+  //데이터 불러오기
+  const { data, error, isLoading } = useFetchData(
+    `/api/target/graph?month=${selectMonth}`
+  );
+  if (error) return <Error />;
+  if (isLoading) return <LoadingSpinners />;
+  //원형 그래프 설정
+  const goalAmount = data && data?.targetAmount; // 목표 금액
+  const currentAmount = data && data?.nowAmount; // 현재 금액
+  const chartWidth = 200; // 원하는 가로 크기
+  const chartHeight = 120; // 원하는 높이
+  return (
+    <Container>
+      <TopContainer>
+        <Text>한달 저축 목표</Text>
+        {/* 날짜 선택 */}
+        <Select
+          value={selectMonth || ""}
+          onChange={(e) => setSelectMonth(e.target.value)}
+        >
+          {options.map((item, idx) => (
+            <option key={idx} value={item.month}>
+              {item.value}
+            </option>
+          ))}
+        </Select>
+      </TopContainer>
+      {/* 하단 부분 */}
+      <BottomContainer>
+        {/* 금액 부분 컨테이너 */}
+        <CostContainer>
+          {/* 목표금액 */}
+          <CostTitle>목표금액</CostTitle>
+          <CostNum>20000원</CostNum>
+          {/* 현재금액 */}
+          <CostTitle>현재 금액</CostTitle>
+          <CostNum>40000원</CostNum>
+        </CostContainer>
+        <CircleGraph
+          goalAmount={goalAmount}
+          currentAmount={currentAmount}
+          height={chartHeight}
+          width={chartWidth}
+        />
+      </BottomContainer>
+    </Container>
+  );
+}
+//원형 그래프 데이터 예시
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+`;
+
+const TopContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray00};
+`;
+
+const Text = styled.a`
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.black};
+`;
+
+const Select = styled.select`
+  border: 1px solid ${({ theme }) => theme.colors.gray07};
+  border-radius: 0.5rem;
+  background-color: ${({ theme }) => theme.colors.gray08};
+  height: 1.5rem;
+  width: 8rem;
+  text-align: left;
+`;
+
+const BottomContainer = styled.div`
+  display: flex;
+  padding: 1rem;
+  justify-content: space-between;
+`;
+const CostContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const CostTitle = styled.a`
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors.gray03};
+`;
+const CostNum = styled.a`
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors.black};
+`;

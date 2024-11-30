@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Layout from "../components/Layout";
+import Layout from "../components/common/Layout";
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("account");
