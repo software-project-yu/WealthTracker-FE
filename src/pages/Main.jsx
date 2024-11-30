@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import Graph from "../components/Graph";
-//메인 페이지
 import Layout from "../components/Layout";
 import CircleGraph from "../components/CircleGraph";
 import DailyGraph from "../components/DailyGraph";
