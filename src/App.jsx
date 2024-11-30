@@ -8,7 +8,7 @@ import Settings from "./pages/Settings";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import FindPassword from "./pages/FindPassword";
-
+import ErrorPage from "./pages/ErrorPage";
 
 function App() {
   return (
@@ -22,6 +22,8 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/findpw" element={<FindPassword />} />
+      {/* 404 페이지 */}
+      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 }
