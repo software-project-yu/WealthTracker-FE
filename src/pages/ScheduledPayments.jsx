@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Layout from "../components/common/Layout";
 import styled from "styled-components";
+import ScheduledModal from "../components/ScheduledModal";
 
 export default function ScheduledPayments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,7 +14,37 @@ export default function ScheduledPayments() {
       lastPayment: "2024-05-15",
       amount: "13,500원",
     },
+    {
+      id: 2,
+      date: "2024-06-20",
+      service: "유튜브 프리미엄",
+      details: "프리미엄 멤버십",
+      lastPayment: "2024-06-20",
+      amount: "11,000원",
+    },
   ]);
+
+  const monthName = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const dateFormat = (date) => {
+    const paymentDate = new Date(date);
+    const convertMonth = monthName[paymentDate.getMonth()];
+    const convertDay = paymentDate.getDate();
+    return { convertMonth, convertDay };
+  };
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -22,58 +53,62 @@ export default function ScheduledPayments() {
     <Layout>
       <ScheduledTitle>결제 예정</ScheduledTitle>
       <ScheduledPaymentsContainer>
-        <PaymentList>
-          <PaymentHeader>
-            <div>결제 예정일</div>
-            <div>상호</div>
-            <div>상세내역</div>
-            <div>마지막 결제</div>
-            <div>금액</div>
-          </PaymentHeader>
-          {payments.map(
-            ({ id, date, service, details, lastPayment, amount }) => (
-              <PaymentItem key={id}>
-                <div>{date}</div>
-                <div>{service}</div>
-                <div>{details}</div>
-                <div>{lastPayment}</div>
-                <div>{amount}</div>
-                <ActionButtons>
-                  <button onClick={() => {}}>수정</button>
-                  <button onClick={() => {}}>삭제</button>
-                </ActionButtons>
-              </PaymentItem>
-            )
-          )}
-          <AddPaymentButton onClick={openModal}>작성하기</AddPaymentButton>
-        </PaymentList>
-        {isModalOpen && <PaymentModal closeModal={closeModal} />}
+        <PaymentHeader>
+          <div>결제 예정일</div>
+          <div>상호</div>
+          <div>상세내역</div>
+          <div>마지막 결제</div>
+          <div>금액</div>
+          <div>편집</div>
+        </PaymentHeader>
+
+        {payments.map((payment) => {
+          const { id, date, service, details, lastPayment, amount } = payment;
+          const { convertMonth, convertDay } = dateFormat(date);
+
+          return (
+            <PaymentItem key={id}>
+              <LeftBox>
+                <MonthText>{convertMonth}</MonthText>
+                <DayText>{convertDay}</DayText>
+              </LeftBox>
+              <div>{service}</div>
+              <div>{details}</div>
+              <div>{lastPayment}</div>
+              <div>{amount}</div>
+              <ActionButtons>
+                <button onClick={() => {}}>수정</button>
+                <button onClick={() => {}}>삭제</button>
+              </ActionButtons>
+            </PaymentItem>
+          );
+        })}
+
+        <AddPaymentButton onClick={openModal}>작성하기</AddPaymentButton>
+
+        {isModalOpen && <ScheduledModal closeModal={closeModal} />}
       </ScheduledPaymentsContainer>
     </Layout>
   );
 }
 
 const ScheduledPaymentsContainer = styled.div`
-  width: 1104px;
-  height: 880px;
-  margin: 20px auto;
+  width: 1104px;;
+  height: 800px;;
+  margin-left: 15px;
+  margin-top: 15px;
   top: 164px;
   left: 304px;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0px 20px 25px rgba(76, 103, 100, 0.1);
-  background-color: #fff;
+  padding: 24px 0px 0px 0px;
   gap: 16px;
+  border-radius: 8px;
   opacity: 0px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 20px 25px 0px rgba(76, 103, 100, 0.1);
 `;
 
 const ScheduledTitle = styled.h3`
-  width: 100px;
-  height: 32px;
-  top: 104px;
-  left: 304px;
-  gap: 0px;
-  opacity: 0px;
+  margin-left: 15px;
   font-family: Pretendard;
   font-size: 22px;
   font-weight: 400;
@@ -83,14 +118,9 @@ const ScheduledTitle = styled.h3`
   text-decoration-skip-ink: none;
 `;
 
-const PaymentList = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 const PaymentHeader = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: 1fr 1fr 2fr 1fr 1fr 1fr;
   font-weight: bold;
   padding: 10px 0;
   border-bottom: 1px solid #e0e0e0;
@@ -100,16 +130,46 @@ const PaymentHeader = styled.div`
 
 const PaymentItem = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: 1fr 1fr 2fr 1fr 1fr 1fr;
+  align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #e0e0e0;
-  color: #333333;
   text-align: center;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+`;
+
+const LeftBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  background-color: #f3f4f6;
+  margin: 0 auto;
+`;
+
+const MonthText = styled.div`
+  font-size: 14px;
+  color: #666666;
+`;
+
+const DayText = styled.div`
+  font-size: 18px;
+  font-weight: bold;
 `;
 
 const ActionButtons = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 10px;
+
   button {
     padding: 5px 10px;
     cursor: pointer;
@@ -118,6 +178,7 @@ const ActionButtons = styled.div`
     border-radius: 4px;
     transition: background-color 0.2s;
   }
+
   button:hover {
     background-color: #ddd;
   }
@@ -130,88 +191,12 @@ const AddPaymentButton = styled.button`
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   margin-top: 20px;
-  width: 100%;
-  &:hover {
-    background-color: #2563eb;
-  }
-`;
-
-const PaymentModal = ({ closeModal }) => {
-  return (
-    <ModalBackground onClick={closeModal}>
-      <Modal onClick={(e) => e.stopPropagation()}>
-        <CloseButton onClick={closeModal}>✕</CloseButton>
-        <h3>결제 예정일</h3>
-        <form>
-          <label>결제 예정일</label>
-          <input type="date" name="date" />
-          <label>상호</label>
-          <input
-            type="text"
-            name="service"
-            placeholder="브랜드 또는 회사명을 입력해 주세요."
-          />
-          <label>상세내역</label>
-          <input
-            type="text"
-            name="details"
-            placeholder="정기 구독 등과 같은 자세한 내용을 입력해 주세요."
-          />
-          <label>마지막 결제</label>
-          <input type="date" name="lastPayment" />
-          <label>금액</label>
-          <input
-            type="text"
-            name="amount"
-            placeholder="금액이 어느 정도 인가요?"
-          />
-          <SaveButton type="button">저장</SaveButton>
-        </form>
-      </Modal>
-    </ModalBackground>
-  );
-};
-
-const ModalBackground = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Modal = styled.div`
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-  position: relative;
-`;
-
-const CloseButton = styled.button`
+  width: 96px;
+  height: 40px;
+  box-shadow: 0px 20px 25px 0px rgba(76, 103, 100, 0.1);
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-`;
-
-const SaveButton = styled.button`
-  background-color: #3b82f6;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 20px;
-  width: 100%;
+  bottom: -100px; /* 아래쪽 여백 */
+  right: 70px; /* 오른쪽 여백 */
 `;

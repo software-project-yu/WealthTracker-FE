@@ -13,20 +13,16 @@ export default function BackGround() {
 }
 const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.gray00};
-  width: auto;
-  height: 1.5rem;
+  width: 100%;
+  height: 3rem;
   display: flex;
   align-items: center;
   padding: 2rem;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray02};
-
-  @media (max-width:1350px) {
-    margin-top: 1.5rem;
-  }
 `;
 const ArrowImage = styled.img`
   width: 1rem;
   height: 1rem;
+  margin-right: 8px;
 `;
 const DateText = styled.a`
   color: ${({ theme }) => theme.colors.gray03};
