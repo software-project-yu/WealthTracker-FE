@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Layout from "../components/common/Layout";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_SERVER_URL;
+
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("account");
   const [name, setName] = useState(""); // 이름 상태
@@ -14,7 +16,7 @@ export default function Settings() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get("http://3.37.214.150:8080/api/profile", {
+      const response = await axios.get(`${API_URL}/api/profile`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setName(response.data.name || "이름 없음");
@@ -34,7 +36,7 @@ export default function Settings() {
     }
     try {
       const response = await axios.put(
-        "http://3.37.214.150:8080/api/profile-update",
+        `${API_URL}/api/profile-update`,
         { name: newName, nickName: newNickName },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -178,7 +180,7 @@ function SecuritySettings() {
 
     try {
       const validateResponse = await axios.post(
-        "http://3.37.214.150:8080/api/confirm-password", 
+        `${API_URL}/api/confirm-password`, 
         { confirmPassword },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
@@ -201,7 +203,7 @@ function SecuritySettings() {
 
     try {
       setLoading(true);
-      const response = await axios.post("http://3.37.214.150:8080/api/reset-password", { email });
+      const response = await axios.post(`${API_URL}/api/reset-password`, { email });
 
       if (response.status === 200) {
         alert("재설정 코드가 이메일로 발송되었습니다.");
@@ -221,7 +223,7 @@ function SecuritySettings() {
   const handleSubmitResetCodeAndPassword = async () => {
     try {
       const verifyResponse = await axios.get(
-        "http://3.37.214.150:8080/api/verify",
+        `${API_URL}/api/verify`,
         { params: { email,code } }
       );
 
@@ -229,7 +231,7 @@ function SecuritySettings() {
         alert("코드가 확인되었습니다. 비밀번호를 변경합니다.");
 
         const resetPasswordResponse = await axios.post(
-          "http://3.37.214.150:8080/api/confirm-reset-password",
+          `${API_URL}/api/confirm-reset-password`,
           { code, newPassword }
         );
 
