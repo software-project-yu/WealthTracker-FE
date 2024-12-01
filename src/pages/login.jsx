@@ -85,7 +85,6 @@ function Login() {
       }
     }
   }, []);
-
   const handleLogin = async () => {
     console.log(`${API_URL}`);
     try {
@@ -117,7 +116,6 @@ function Login() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
   return (
     <Wrapper>
       <Title>WealthTracker</Title>
