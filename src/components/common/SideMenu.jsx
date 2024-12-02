@@ -16,8 +16,10 @@ import LogoutIcon from "../../assets/images/menu_Icon/Logout.png";
 import styled from "styled-components";
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Button, List, SwipeableDrawer } from "@mui/material";
+import axios from "axios";
 
 export default function SideMenu() {
+  const API_URL = import.meta.env.VITE_SERVER_URL;
   //경로 배열
   const pageName = [
     { name: "홈", imageSrc: icon1, imageSrcWhite: icon1_white, page: "/" },
@@ -55,6 +57,7 @@ export default function SideMenu() {
   const nav = useNavigate();
   //메뉴 버튼 클릭 시
   const onClickMenuItem = (src) => {
+    
     nav(src);
   };
   //로그아웃
@@ -68,7 +71,24 @@ export default function SideMenu() {
 
   //햄버거 메뉴
   const [menu, setMenu] = useState({ top: false });
+  const [name, setName] = useState(""); 
+  const [nickName, setnickName] = useState("");
+  useEffect(() => {
+    // 사용자 이름을 서버에서 가져오는 API 호출
+    const fetchUserName = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/profile`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        setName(response.data.name); // 서버에서 받은 사용자 이름으로 상태 업데이트
+        setnickName(response.data.nickName);  
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
 
+    fetchUserName(); // 컴포넌트가 마운트될 때 API 호출
+  }, []);
   const toggleDrawer = (anchor, open) => (e) => {
     if (e && e.type == "keydown" && (e.key == "Tab" || e.key == "Shift")) {
       return;
@@ -125,7 +145,7 @@ export default function SideMenu() {
       <Line />
       <ProfileContainer>
         <ProfileImage src={defaultProfile} />
-        <ProfileUserName>홍길동</ProfileUserName>
+        <ProfileUserName>{name}</ProfileUserName>
       </ProfileContainer>
       {/* 메뉴 아이템 */}
       {pageName.map((item, idx) => (

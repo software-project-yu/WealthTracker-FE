@@ -1,11 +1,15 @@
 import styled from "styled-components";
 import CircleGraph from "../common/CircleGraph.jsx";
-
+import useFetchData from "../../hooks/useFetch.jsx";
+import { useState } from "react";
+import Error from "../common/Error.jsx";
+import LoadingSpinners from "../common/LoadingSpinners.jsx";
 //저축 목표
 export default function SavingsGoal() {
   //윤년 계산을 위한 현재 날짜
   const today = new Date().getFullYear();
-
+  //선택한 월
+  const [selectMonth, setSelectMonth] = useState(new Date().getMonth());
   const options = [
     { month: 1, value: "1.1 ~ 1.31" },
     { month: 2, value: today % 4 == 0 ? "2.1 ~ 2.29" : "2.1 ~ 2.28" },
@@ -21,9 +25,15 @@ export default function SavingsGoal() {
     { month: 12, value: "12.1 ~ 12.31" },
   ];
 
+  //데이터 불러오기
+  const { data, error, isLoading } = useFetchData(
+    `/api/target/graph?month=${selectMonth}`
+  );
+  if (error) return <Error />;
+  if (isLoading) return <LoadingSpinners />;
   //원형 그래프 설정
-  const goalAmount = 100; // 목표 금액
-  const currentAmount = 85; // 현재 금액
+  const goalAmount = data && data?.targetAmount; // 목표 금액
+  const currentAmount = data && data?.nowAmount; // 현재 금액
   const chartWidth = 200; // 원하는 가로 크기
   const chartHeight = 120; // 원하는 높이
   return (
@@ -31,7 +41,10 @@ export default function SavingsGoal() {
       <TopContainer>
         <Text>한달 저축 목표</Text>
         {/* 날짜 선택 */}
-        <Select>
+        <Select
+          value={selectMonth || ""}
+          onChange={(e) => setSelectMonth(e.target.value)}
+        >
           {options.map((item, idx) => (
             <option key={idx} value={item.month}>
               {item.value}
