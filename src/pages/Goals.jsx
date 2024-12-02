@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Layout from "../components/Layout";
-import CircleGraph from "../components/CircleGraph";
+import SavingsGoal from "../components/SavingsGoal";
 import styled from "styled-components";
 import Calendar from "../components/Calendar";
 import Housing from "../assets/images/categoryIMG/Housing.png";
@@ -64,7 +64,7 @@ export default function Goals() {
       <PageWrapper>
         <Section>
           <SectionTitle>저축 목표</SectionTitle>
-          <SavingsGoal>
+          <SavingGoal>
             <GoalCard>
               <GoalHeader>
                 한달 저축 목표
@@ -89,7 +89,7 @@ export default function Goals() {
                   <Button1 onClick={handleOpenModal}>목표 수정하기</Button1>{" "}
                 </AmountInfo>
                 <GraphWrapper>
-                  <CircleGraph
+                  <SavingsGoal
                     goalAmount={goal}
                     currentAmount={current}
                     width={250}
@@ -101,7 +101,7 @@ export default function Goals() {
             <CalendarWrapper>
               <Calendar />
             </CalendarWrapper>
-          </SavingsGoal>
+          </SavingGoal>
         </Section>
 
         <Section>
@@ -171,7 +171,7 @@ const SectionTitle = styled.h2`
   margin-bottom: 10px;
 `;
 
-const SavingsGoal = styled.div`
+const SavingGoal = styled.div`
   display: flex;
   gap: 20px;
   align-items: stretch;
