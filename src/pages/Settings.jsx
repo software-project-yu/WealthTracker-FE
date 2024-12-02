@@ -45,6 +45,7 @@ export default function Settings() {
       setName(response.data.name);
       setNickName(response.data.nickName);
       alert("프로필이 성공적으로 수정되었습니다.");
+      window.location.reload();
     } catch (err) {
       alert("프로필 수정에 실패했습니다.");
     }
