@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Input = styled.input`
+export const Input = styled.input`
   width: 85%;
   padding: 10px;
   padding-right: 30px;
@@ -29,13 +29,13 @@ const Input = styled.input`
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
 `;
-
 const Findtext = styled.div`
   font-size: 14px;
   color: #919eab;
 `;
 
-const PopupOverlay = styled.div`
+
+export const PopupOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -48,7 +48,7 @@ const PopupOverlay = styled.div`
   z-index: 1000;
 `;
 
-const Popup = styled.div`
+export const Popup = styled.div`
   background: white;
   padding: 20px;
   border-radius: 10px;
@@ -58,19 +58,27 @@ const Popup = styled.div`
   text-align: center;
 `;
 
-const PopupButton = styled(Button)`
-  margin-top: 20px;
+export const PopupButton = styled(Button)`
+  margin:20px;
+  width:20%;
+  padding:20px;
+  border: 1px solid #007BFF;
+`;
+const LoginLink = styled.span`
+  font-size: 12px;
+  color: #007bff;
+  cursor: pointer;
 `;
 
 export default function FindPassword() {
-  const [email, setEmail] = useState("");
-  const [showCodePopup, setShowCodePopup] = useState(false);
-  const [showResetPopup, setShowResetPopup] = useState(false);
-  const [resetCode, setResetCode] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [loading, setLoading] = useState(false); // 로딩 상태 추가
-  const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_SERVER_URL;
+const [email, setEmail] = useState("");
+const [showCodePopup, setShowCodePopup] = useState(false);
+const [showResetPopup, setShowResetPopup] = useState(false);
+const [code, setResetCode] = useState("");
+const [newPassword, setNewPassword] = useState("");
+const [loading, setLoading] = useState(false); // 로딩 상태 추가
+const navigate = useNavigate();
+const API_URL = import.meta.env.VITE_SERVER_URL;
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -102,28 +110,36 @@ export default function FindPassword() {
 
   // 재설정 코드 확인 API 호출
   const handleVerifyCode = async () => {
-    if (!resetCode) {
+    if (!code) {
       alert("재설정 코드를 입력해주세요!");
       return;
     }
+    console.log("이메일:", email);
+  console.log("재설정 코드:", code);
     try {
       setLoading(true);
-      const response = await axios.post(`${API_URL}/api/confirm-reset-password`, {
-        email,
-        resetCode,
+  
+      // axios.get에서 쿼리 파라미터를 전달하는 방식
+      const response = await axios.get(`${API_URL}/api/verify`, {
+        params: {
+          email,
+          code,
+        },
       });
+  
       if (response.status === 200) {
         alert("코드가 확인되었습니다. 새 비밀번호를 입력하세요.");
         setShowCodePopup(false);
         setShowResetPopup(true);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error during code verification:", error);
       alert("재설정 코드 확인 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
   };
+  
 
   // 비밀번호 재설정 API 호출
   const handleResetPassword = async () => {
@@ -133,8 +149,8 @@ export default function FindPassword() {
     }
     try {
       setLoading(true);
-      const response = await axios.post(`${API_URL}/api/reset-password`, {
-        email,
+      const response = await axios.post(`${API_URL}/api/confirm-reset-password`, {
+        code,
         newPassword,
       });
       if (response.status === 200) {
@@ -176,6 +192,7 @@ export default function FindPassword() {
             {loading ? "처리 중..." : "비밀번호 재설정"}
           </Button>
         </Form>
+        <LoginLink onClick={() => navigate("/login")}>로그인으로 돌아가기</LoginLink>
       </Wrapper>
 
       {/* 재설정 코드 팝업 */}
@@ -186,12 +203,13 @@ export default function FindPassword() {
             <Input
               type="text"
               placeholder="재설정 코드를 입력하세요"
-              value={resetCode}
+              value={code}
               onChange={(e) => setResetCode(e.target.value)}
             />
             <PopupButton onClick={handleVerifyCode} disabled={loading}>
               {loading ? "처리 중..." : "확인"}
             </PopupButton>
+            <PopupButton onClick={()=> setShowCodePopup(false)}>취소</PopupButton>
           </Popup>
         </PopupOverlay>
       )}
@@ -208,11 +226,13 @@ export default function FindPassword() {
               onChange={(e) => setNewPassword(e.target.value)}
             />
             <PopupButton onClick={handleResetPassword} disabled={loading}>
-              {loading ? "처리 중..." : "비밀번호 재설정"}
+              {loading ? "처리 중..." : "재설정"}
             </PopupButton>
+            <PopupButton onClick={()=> setShowResetPopup(false)}>취소</PopupButton>
           </Popup>
         </PopupOverlay>
       )}
     </>
   );
 }
+export function FindApi(){}
