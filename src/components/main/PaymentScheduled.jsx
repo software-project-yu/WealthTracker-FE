@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import useFetchData from "../../hooks/useFetch";
+import Error from "../common/Error";
+import LoadingSpinners from "../common/LoadingSpinners";
 
 export default function PaymentScheduled() {
   //월 리스트
@@ -16,22 +19,22 @@ export default function PaymentScheduled() {
     "Nov",
     "Dec",
   ];
-  const data = [
-    {
-      id: 1,
-      date: "2022-11-11",
-      content: "Netflix-스탠다드 멤버쉽",
-      company: "Netflix",
-      cost: 20000,
-    },
-    {
-      id: 2,
-      date: "2022-12-23",
-      content: "Netflix-스탠다드 멤버쉽",
-      company: "Netflix",
-      cost: 40000,
-    },
-  ];
+  // {
+  //   id: 1,
+  //   date: "2022-11-11",
+  //   content: "Netflix-스탠다드 멤버쉽",
+  //   company: "Netflix",
+  //   cost: 20000,
+  // },
+  // {
+  //   id: 2,
+  //   date: "2022-12-23",
+  //   content: "Netflix-스탠다드 멤버쉽",
+  //   company: "Netflix",
+  //   cost: 40000,
+  // },
+  const { data, isLoading, error } = useFetchData("/api/payment/recent");
+
   //데이터 날짜 포맷
   const dateFormat = (date) => {
     //string -> date Format
@@ -40,10 +43,15 @@ export default function PaymentScheduled() {
     const convertDay = paymentDate.getDate();
     return { convertMonth, convertDay };
   };
-
+  if (error) return <Error />;
+  if (isLoading) return <LoadingSpinners />;
   return (
     <Container>
-      {data &&
+      {/* 데이터가 0이면 */}
+      {data && data.length == 0 ? (
+        <NullText>결제예정 내역이 없습니다.</NullText>
+      ) : (
+        data &&
         data.map((item) => {
           const { convertMonth, convertDay } = dateFormat(item.date);
           return (
@@ -60,7 +68,8 @@ export default function PaymentScheduled() {
               <RightBox>{item.cost.toLocaleString("ko-KR")}원</RightBox>
             </ContentContainer>
           );
-        })}
+        })
+      )}
     </Container>
   );
 }
@@ -68,7 +77,7 @@ export default function PaymentScheduled() {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
- justify-content: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
 `;
@@ -77,7 +86,7 @@ const ContentContainer = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray00};
   justify-content: space-between;
   align-items: center;
-  padding:0.5rem;
+  padding: 0.5rem;
 
   &:last-child {
     border-bottom: none;
@@ -120,7 +129,11 @@ const RightBox = styled.div`
   border-radius: 0.5rem;
   height: fit-content;
   padding: 0.5rem;
-  display: flex;          
+  display: flex;
   align-items: center;
   justify-content: center;
+`;
+const NullText = styled.a`
+  font-size: 1.5rem;
+  font-weight: 700;
 `;
