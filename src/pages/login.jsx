@@ -134,6 +134,7 @@ function Login() {
           <Input
             type={showPassword ? "text" : "password"}
             value={password}
+            placeholder="비밀번호를 입력해 주세요."
             onChange={(e) => setPassword(e.target.value)}
           />
           <PasswordToggle type="button" onClick={togglePasswordVisibility}>
