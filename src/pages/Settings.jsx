@@ -59,7 +59,6 @@ export default function Settings() {
 
   return (
     <Layout>
-
       <SettingsContainer>
         <TabButtons>
           <TabButton
@@ -112,13 +111,10 @@ function AccountSettings({ name, nickName, loading, error, onEdit }) {
         <p>이름</p>
         <InfoBox>{name}</InfoBox>
 
-<<<<<<< HEAD
         <p>유저이름</p>
         <InfoBox className="info-box">홍길동</InfoBox>
-=======
         <p>유저 이름</p>
         <InfoBox>{nickName}</InfoBox>
->>>>>>> 3699d58b55eb0f29fdf89bc293e646d5aa1fb241
       </ProfileInfo>
       <UpdateButton onClick={onEdit}>프로필 수정</UpdateButton>
     </div>
@@ -159,23 +155,25 @@ function EditProfileModal({ currentName, currentNickName, onClose, onSave }) {
   );
 }
 
-
 function SecuritySettings() {
   const [confirmPassword, setConfirmPassword] = useState(""); // 기존 비밀번호 상태
   const [newPassword, setNewPassword] = useState(""); // 새 비밀번호 상태
   const [confirmNewPassword, setConfirmNewPassword] = useState(""); // 새 비밀번호 확인 상태
-  const [showEmailPopup, setShowEmailPopup] = useState(false);  // 이메일 입력 팝업 상태
+  const [showEmailPopup, setShowEmailPopup] = useState(false); // 이메일 입력 팝업 상태
   const [showCodePopup, setShowCodePopup] = useState(false); // 재설정 코드 팝업 상태
-  const [email, setEmail] = useState("");  // 이메일 입력값 상태
+  const [email, setEmail] = useState(""); // 이메일 입력값 상태
   const [loading, setLoading] = useState(false); // 로딩 상태
-  const [code, setCode] = useState("");  // 재설정 코드 상태
+  const [code, setCode] = useState(""); // 재설정 코드 상태
 
-  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,15}$/;
+  const passwordRegex =
+    /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,15}$/;
 
   // 비밀번호 변경 처리
   const handlePasswordChange = async () => {
     if (!passwordRegex.test(newPassword)) {
-      alert("비밀번호는 8~15자 영문자/숫자/특수문자를 각각 최소 1개 포함해야 합니다.");
+      alert(
+        "비밀번호는 8~15자 영문자/숫자/특수문자를 각각 최소 1개 포함해야 합니다."
+      );
       return;
     }
 
@@ -186,13 +184,15 @@ function SecuritySettings() {
 
     try {
       const validateResponse = await axios.post(
-        `${API_URL}/api/confirm-password`, 
+        `${API_URL}/api/confirm-password`,
         { confirmPassword },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
 
       if (validateResponse.status === 200) {
-        setShowEmailPopup(true);  // 이메일 팝업 열기
+        setShowEmailPopup(true); // 이메일 팝업 열기
       }
     } catch (error) {
       alert("현재 비밀번호가 일치하지 않습니다.");
@@ -209,7 +209,9 @@ function SecuritySettings() {
 
     try {
       setLoading(true);
-      const response = await axios.post(`${API_URL}/api/reset-password`, { email });
+      const response = await axios.post(`${API_URL}/api/reset-password`, {
+        email,
+      });
 
       if (response.status === 200) {
         alert("재설정 코드가 이메일로 발송되었습니다.");
@@ -228,10 +230,9 @@ function SecuritySettings() {
   // 재설정 코드 확인 및 비밀번호 변경
   const handleSubmitResetCodeAndPassword = async () => {
     try {
-      const verifyResponse = await axios.get(
-        `${API_URL}/api/verify`,
-        { params: { email,code } }
-      );
+      const verifyResponse = await axios.get(`${API_URL}/api/verify`, {
+        params: { email, code },
+      });
 
       if (verifyResponse.status === 200) {
         alert("코드가 확인되었습니다. 비밀번호를 변경합니다.");
@@ -276,63 +277,11 @@ function SecuritySettings() {
         />
 
         <label>비밀번호 확인</label>
-<<<<<<< HEAD
         <input type="password" placeholder="********" />
       </SecurityForm>
       <div>
         <UpdateButton>비밀번호 변경</UpdateButton>
       </div>
-=======
-        <input
-          type="password"
-          placeholder="********"
-          value={confirmNewPassword}
-          onChange={(e) => setConfirmNewPassword(e.target.value)}
-        />
-      </SecurityForm>
-
-      <UpdateButton onClick={handlePasswordChange}>비밀번호 변경</UpdateButton>
-
-      {/* 이메일 입력 팝업 */}
-      {showEmailPopup && (
-        <ModalOverlay>
-          <ModalContent>
-            <h3>이메일을 입력해주세요</h3>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="이메일 주소"
-            />
-            <ModalActions>
-              <button onClick={() => setShowEmailPopup(false)}>취소</button>
-              <button onClick={handleSubmitEmail} disabled={loading}>
-                {loading ? "로딩 중..." : "확인"}
-              </button>
-            </ModalActions>
-          </ModalContent>
-        </ModalOverlay>
-      )}
-
-      {/* 재설정 코드 입력 팝업 */}
-      {showCodePopup && (
-        <ModalOverlay>
-          <ModalContent>
-            <h3>재설정 코드를 입력해주세요</h3>
-            <input
-              type="text"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="재설정 코드"
-            />
-            <ModalActions>
-              <button onClick={() => setShowCodePopup(false)}>취소</button>
-              <button onClick={handleSubmitResetCodeAndPassword}>비밀번호 변경</button>
-            </ModalActions>
-          </ModalContent>
-        </ModalOverlay>
-      )}
->>>>>>> 3699d58b55eb0f29fdf89bc293e646d5aa1fb241
     </div>
   );
 }
@@ -378,12 +327,10 @@ line-height: 32px;
 text-align: left;
 text-underline-position: from-font;
 text-decoration-skip-ink: none;
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 3699d58b55eb0f29fdf89bc293e646d5aa1fb241
   
+
   &:hover {
     color:rgba(0, 123, 255, 1);
     text-decoration: underline;
@@ -470,74 +417,4 @@ const UpdateButton = styled.button`
   text-align: center;
   text-underline-position: from-font;
   text-decoration-skip-ink: none;
-<<<<<<< HEAD
-=======
-`;
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-`;
-const ModalContent = styled.div`
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 500px;
-  height: 300px;
-  display: flex; /* 플렉스 컨테이너 설정 */
-  flex-direction: column; /* 세로 방향 정렬 */
-  justify-content: space-between; /* 상단과 하단에 요소 배치 */
-  text-align: center;
-
-  h3 {
-    margin-bottom: 20px;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 10px;
-    margin-left: 30px;
-    text-align: left;
-  }
-
-  input {
-    width: 80%;
-    padding: 8px;
-    margin-left: 30px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-`;
-
-const ModalActions = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding-top: 20px;
-
-  button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0 10px;
-  }
-
-  button:first-child {
-    background: #ccc;
-    color: white;
-  }
-
-  button:last-child {
-    background: #4285f4;
-    color: white;
-  }
->>>>>>> 3699d58b55eb0f29fdf89bc293e646d5aa1fb241
 `;
