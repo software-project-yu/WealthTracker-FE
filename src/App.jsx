@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 import Main from "./pages/Main";
 import Transactions from "./pages/Transactions";
@@ -10,6 +9,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import FindPassword from "./pages/FindPassword";
 import styled from "styled-components";
+
 
 
 function App() {

@@ -1,3 +1,6 @@
+
+//메인 페이지
+
 import styled from "styled-components";
 import Layout from "../components/common/Layout";
 import Logo from "../assets/images/Logo.png";

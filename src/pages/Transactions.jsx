@@ -1,4 +1,10 @@
 //수입/지출 내역 페이지
+import Layout from "../components/Layout";
+
 export default function Transactions() {
-  return <></>;
+  return (
+    <Layout>
+      <h1>Example4</h1>
+    </Layout>
+  );
 }
