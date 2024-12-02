@@ -19,20 +19,7 @@ export default function PaymentScheduled() {
     "Nov",
     "Dec",
   ];
-  // {
-  //   id: 1,
-  //   date: "2022-11-11",
-  //   content: "Netflix-스탠다드 멤버쉽",
-  //   company: "Netflix",
-  //   cost: 20000,
-  // },
-  // {
-  //   id: 2,
-  //   date: "2022-12-23",
-  //   content: "Netflix-스탠다드 멤버쉽",
-  //   company: "Netflix",
-  //   cost: 40000,
-  // },
+
   const { data, isLoading, error } = useFetchData("/api/payment/recent");
 
   //데이터 날짜 포맷
@@ -53,7 +40,7 @@ export default function PaymentScheduled() {
       ) : (
         data &&
         data.map((item) => {
-          const { convertMonth, convertDay } = dateFormat(item.date);
+          const { convertMonth, convertDay } = dateFormat(item.dueDate);
           return (
             <ContentContainer key={item.id}>
               <LeftBox>
@@ -61,9 +48,9 @@ export default function PaymentScheduled() {
                 <DayText>{convertDay}</DayText>
               </LeftBox>
               <CenterBox>
-                <Text>{item.company}</Text>
-                <Text>{item.content}</Text>
-                <DateText>{item.date.replaceAll("-", ".")}</DateText>
+                <Text>{item.tradeName}</Text>
+                <Text>{item.paymentDetail}</Text>
+                <DateText>{item.lastPayment.replaceAll("-", ".")}</DateText>
               </CenterBox>
               <RightBox>{item.cost.toLocaleString("ko-KR")}원</RightBox>
             </ContentContainer>
