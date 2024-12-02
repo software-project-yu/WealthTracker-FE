@@ -12,27 +12,26 @@ import { Link,useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 const Input = styled.input`
-   width: 85%;
+  width: 85%;
   padding: 10px;
   padding-right: 30px;
-  border: 1px solid #ccc; /* 기본 테두리 색상 */
+  border: 1px solid #ccc;
   border-radius: 4px;
   margin: 10px 0;
-  background: transparent; /* 배경 투명 */
-  color: #000; /* 텍스트 색상 */
-  outline: none; /* 기본 포커스 테두리 제거 */
+  background: transparent;
+  color: #000;
+  outline: none;
+  position: relative; /* position relative 추가 */
 
   ::placeholder {
-    color: #aaa; /* Placeholder 색상 */
+    color: #aaa;
   }
 
   &:focus {
-    border: 1px solid black; /* 클릭/포커스 시 진한 테두리 */
-    
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* 애니메이션 */
-  
+    border: 1px solid black;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
 `;
-
 const PasswordToggle = styled.button`
   position: absolute;
   right: 10px;
@@ -120,7 +119,7 @@ function Login() {
     <Wrapper>
       <Title>WealthTracker</Title>
       <Form onSubmit={(e) => e.preventDefault()}>
-        <div>
+        <InputWrapper>
           <label>이메일 주소</label>
           <Input
             type="email"
@@ -128,7 +127,7 @@ function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-        </div>
+        </InputWrapper>
 
         <InputWrapper>
           <label>비밀번호</label>
