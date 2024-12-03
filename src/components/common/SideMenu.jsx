@@ -138,6 +138,7 @@ export default function SideMenu() {
     };
   }, [browserWidth]);
 
+
   return browserWidth > 1350 ? (
     <Container>
       <Logo>WealthTracker</Logo>

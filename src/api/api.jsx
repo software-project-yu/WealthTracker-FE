@@ -61,4 +61,4 @@ const refreshToken = async () => {
   return response.data.accessToken;
 };
 
-export default api;
+export { api };
