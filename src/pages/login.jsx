@@ -7,7 +7,6 @@ import {
   Title,
   Form,
   Button,
-  OrText,
   InputWrapper
 } from "../components/Login.js";
 import { Link,useNavigate } from 'react-router-dom';
