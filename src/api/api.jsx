@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import https from "https";
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
   timeout: 10000,
@@ -8,13 +8,13 @@ const api = axios.create({
   },
 });
 //임시토큰 사용
-const initialAccessToken = import.meta.env.VITE_TOKEN;
-//localStorage.setItem("accessToken", initialAccessToken);
+
+const token = localStorage.setItem("token");
 
 // 요청 인터셉터
 api.interceptors.request.use(
   (config) => {
-    const accessToken = initialAccessToken;
+    const accessToken = token;
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
