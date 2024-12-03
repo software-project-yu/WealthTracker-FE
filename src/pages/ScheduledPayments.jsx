@@ -178,10 +178,19 @@ const handleSave = (paymentData) => {
   );
 }
 
-export default ScheduledPayments;
-
-const Container = styled.div`
-  margin-top: 20px;
+const ScheduledPaymentsContainer = styled.div`
+  width: 1104px;
+  height: 800px;
+  margin-left: 15px;
+  margin-top: 15px;
+  top: 164px;
+  left: 304px;
+  padding: 24px 0px 0px 0px;
+  gap: 16px;
+  border-radius: 8px;
+  opacity: 0px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 20px 25px 0px rgba(76, 103, 100, 0.1);
 `;
 
 const PageTitle = styled.h1`

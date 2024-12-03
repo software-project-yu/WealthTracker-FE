@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 
 const RADIAN = Math.PI / 180;
+const iR = 80;
+const oR = 100;
 
 // 바늘 컴포넌트 함수
 const needle = (value, total, cx, cy, iR, oR, color) => {
@@ -48,8 +50,7 @@ export default function CircleGraph({
   const finalValue = currentAmount;
   const cx = width / 2;
   const cy = height - 15;
-  const iR = width * 0.4;
-  const oR = height * 0.8;
+
   // 바늘 애니메이션 효과
   useEffect(() => {
     if (currentValue < finalValue) {
@@ -101,7 +102,7 @@ export default function CircleGraph({
       </PieChart>
       <TextContainer>
         <Text>0원</Text>
-        <Text>{goalAmount}원</Text>
+        <Text>{goalAmount}만원</Text>
       </TextContainer>
     </Container>
   );
@@ -117,7 +118,7 @@ const Container = styled.div`
 const TextContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  width: 85%;
 `;
 
 const Text = styled.span`

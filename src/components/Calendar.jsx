@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import GoalModal from "../components/GoalModal";
 
-const Calendar = () => {
+const Calendar = ({ targetId }) => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today);
   const [modalOpen, setModalOpen] = useState(false);
@@ -133,6 +133,7 @@ const Calendar = () => {
           date={selectedDate}
           onClose={closeModal}
           onSubmit={handleGoalSubmit}
+          targetId={targetId} // targetId 전달
         />
       )}
     </CalendarWrapper>
