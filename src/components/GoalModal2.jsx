@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-export default function GoalModal1({
+export default function GoalModal2({
   isOpen,
   onClose,
   targetAmount,
   setTargetAmount,
   onSave,
-  targetId,
+  selectedCategory,
+  currentExpend, // currentExpend 추가
 }) {
   const [newTargetAmount, setNewTargetAmount] = useState(targetAmount);
 
@@ -15,27 +16,17 @@ export default function GoalModal1({
     setNewTargetAmount(targetAmount);
   }, [targetAmount]);
 
-  const getFirstAndLastDayOfMonth = (year, month) => {
-    const firstDay = new Date(year, month, 1).toISOString().split("T")[0];
-    const lastDay = new Date(year, month + 1, 0).toISOString().split("T")[0];
-    return { firstDay, lastDay };
-  };
-
   const handleSave = () => {
     if (newTargetAmount && !isNaN(newTargetAmount)) {
-      const url = `${import.meta.env.VITE_SERVER_URL}/api/target/create`;
-      const method = "POST";
-
-      const today = new Date();
-      const { firstDay, lastDay } = getFirstAndLastDayOfMonth(
-        today.getFullYear(),
-        today.getMonth()
-      );
+      const isCreating = targetAmount === 0; // targetAmount가 0이면 생성, 0이 아니면 수정
+      const url = isCreating
+        ? `${import.meta.env.VITE_SERVER_URL}/api/category-target/create`
+        : `${import.meta.env.VITE_SERVER_URL}/api/category-target/update`;
+      const method = isCreating ? "POST" : "PUT";
 
       const requestBody = JSON.stringify({
-        targetAmount: parseInt(newTargetAmount, 10), // 숫자형으로 변환
-        startDate: firstDay,
-        endDate: lastDay,
+        category: selectedCategory,
+        targetAmount: parseFloat(newTargetAmount), // 숫자로 변환하여 전달
       });
 
       console.log("API 요청 URL:", url);
@@ -65,13 +56,13 @@ export default function GoalModal1({
           return response.json();
         })
         .then((result) => {
-          console.log("저축 목표 금액이 성공적으로 저장되었습니다.", result);
+          console.log("목표 금액이 성공적으로 저장되었습니다.", result);
           setTargetAmount(result.targetAmount);
-          onSave(result.targetAmount); // onSave 콜백 호출
-          onClose(); // 저장 성공 시 모달 닫기
+          onSave(result.targetAmount);
+          onClose();
         })
         .catch((error) => {
-          console.error("저축 목표 금액 저장 실패:", error);
+          console.error("목표 금액 저장 실패:", error);
         });
     } else {
       alert("유효한 금액을 입력해주세요.");
@@ -83,14 +74,14 @@ export default function GoalModal1({
       <ModalWrapper>
         <ModalContent onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
-            <Title>저축 목표 금액</Title>
+            <Title>목표 금액</Title>
             <CloseButton onClick={onClose}>×</CloseButton>
           </ModalHeader>
           <ModalBody>
             <Input
               type="text"
               inputMode="numeric"
-              placeholder="저축 목표 금액을 입력하세요"
+              placeholder="목표 금액을 입력하세요"
               value={newTargetAmount}
               onChange={(e) => setNewTargetAmount(e.target.value)}
             />
@@ -171,7 +162,6 @@ const Input = styled.input`
 const SaveButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
-  width: 100%;
 `;
 
 const SaveButton = styled.button`
