@@ -8,9 +8,9 @@ import {
   Form,
   Button,
   OrText,
-  InputWrapper
+  InputWrapper,
 } from "../components/Login.js";
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 const Input = styled.input`
    width: 85%;
@@ -22,7 +22,6 @@ const Input = styled.input`
   background: transparent; /* 배경 투명 */
   color: #000; /* 텍스트 색상 */
   outline: none; /* 기본 포커스 테두리 제거 */
-
   ::placeholder {
     color: #aaa; /* Placeholder 색상 */
   }
@@ -66,7 +65,6 @@ const CheckboxLabel = styled.label`
   font-size: 12px;
   margin-left: 5px;
 `;
-
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -143,7 +141,9 @@ function Login() {
           <PasswordToggle type="button" onClick={togglePasswordVisibility}>
             {showPassword ? <FaEye /> : <FaEyeSlash />}
           </PasswordToggle>
-          <ForgotPasswordLink to="/findpw">비밀번호를 잊으셨나요?</ForgotPasswordLink>
+          <ForgotPasswordLink to="/findpw">
+            비밀번호를 잊으셨나요?
+          </ForgotPasswordLink>
         </InputWrapper>
 
         <CheckboxWrapper>
@@ -165,7 +165,11 @@ function Login() {
           {<BsChatFill />} 카카오 계정 로그인
         </Button>
 
-        <Button className="signup" type="button" onClick={() => navigate("/signup")}>
+        <Button
+          className="signup"
+          type="button"
+          onClick={() => navigate("/signup")}
+        >
           회원가입 하기
         </Button>
       </Form>

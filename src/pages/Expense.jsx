@@ -1,5 +1,5 @@
-import Layout from "../components/Layout";
-import DailyGraph from "../components/DailyGraph"; // DailyGraph 사용
+import Layout from "../components/common/Layout";
+import DailyGraph from "../components/common/DailyGraph"; // DailyGraph 사용
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import HousingIcon from "../assets/images/categoryIMG/Housing.png";
