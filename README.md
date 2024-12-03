@@ -22,6 +22,8 @@
 
 
 ## 프로젝트 구조
+
+```
 📂 WealthTracker-FE
 ├── 📁 dist/                 # 빌드 결과물 디렉터리
 ├── 📁 node_modules/         # 설치된 라이브러리 및 의존성
@@ -91,7 +93,7 @@
 ├── 📄 package.json          # 프로젝트 및 의존성 설정
 ├── 📄 vite.config.js        # Vite 설정 파일
 └── 📄 yarn.lock             # Yarn 종속성 잠금 파일
-
+```
 
 
 
