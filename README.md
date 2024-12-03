@@ -20,6 +20,12 @@
 ### - 설정
 
 
+## 개발 환경
+
+#### - HTML
+#### - REACT
+#### - styled-components
+
 
 ## 프로젝트 구조
 
@@ -56,15 +62,7 @@
 │   │       ├── Pagination.jsx
 │   │       ├── Tabs.jsx
 │   │       ├── TransactionList.jsx
-│   │       ├── TransactionModal.jsx
-│   │       ├── BackGround.jsx
-│   │       ├── Calendar.jsx
-│   │       ├── GoalModal.jsx
-│   │       ├── Graph.jsx
-│   │       ├── Layout.jsx
-│   │       ├── Login.jsx
-│   │       ├── ScheduledModal.jsx
-│   │       └── SideMenu.jsx
+│   │       └── TransactionModal.jsx
 │   ├── 📁 hooks/            # 커스텀 훅
 │   │   ├── useFetch.jsx
 │   │   ├── useFetchSch.jsx
@@ -94,6 +92,7 @@
 ├── 📄 vite.config.js        # Vite 설정 파일
 └── 📄 yarn.lock             # Yarn 종속성 잠금 파일
 ```
+
 
 
 
