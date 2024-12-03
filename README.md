@@ -1,9 +1,18 @@
-# React + Vite
+# WealthTracker - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React 기반 가계부 웹 페이지입니다.
+Styled-components를 활용한 세련된 UI 디자인과, JWT 기반 API 통신으로 안전한 데이터 처리를 지원합니다.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-d2bf9776df23469f801d9796a8a357bfc14c5a0
+## 프로젝트 페이지별 주요 기능
+
+### - 로그인 
+### - 수입/지출 내역
+### - 결제 예정
+### - 비용
+### - 목표
+### - 설정
+
+
+
+
