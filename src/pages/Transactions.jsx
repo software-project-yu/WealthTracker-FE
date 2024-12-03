@@ -13,14 +13,11 @@ import {
   createExpend,
   updateExpend,
   deleteExpend,
-  fetchExpendList
 } from "../api/expendAPI";
-
 import {
   createIncome,
   updateIncome,
   deleteIncome,
-  fetchIncomeList
 } from "../api/incomeAPI";
 
 export default function Transactions() {
@@ -36,10 +33,10 @@ export default function Transactions() {
   const currentMonth = currentDate.getMonth() + 1;
 
   const { data: transactions, isLoading: isExpendLoading, error: expendError } =
-  useFetchTrans("/api/expend/list", { month: currentMonth });
+    useFetchTrans("/api/expend/list", { month: currentMonth });
 
   const { data: incomeList, isLoading: isIncomeLoading, error: incomeError } =
-  useFetchTrans("/api/income/list", { month: currentMonth });
+    useFetchTrans("/api/income/list", { month: currentMonth });
 
   const addTransaction = useMutation({
     mutationFn: (data) =>
@@ -80,16 +77,38 @@ export default function Transactions() {
     },
   });
 
-  const displayedTransactions =
-    activeTab === "전체"
-      ? [...(transactions || []), ...(incomeList || [])]
-      : activeTab === "수입"
-      ? incomeList || []
-      : transactions || [];
+  const displayedTransactions = (() => {
+    if (activeTab === "전체") {
+      const combinedData = [
+        ...(transactions || []).map((item) => ({
+          ...item,
+          type: "지출",
+          transactionDate: item.expendDate,
+          amount: item.cost,
+        })),
+        ...(incomeList || []).map((item) => ({
+          ...item,
+          type: "수입",
+          transactionDate: item.incomeDate,
+          amount: item.amount,
+        })),
+      ];
+
+      return combinedData.sort((a, b) => {
+        const dateDiff =
+          new Date(b.transactionDate).getTime() -
+          new Date(a.transactionDate).getTime();
+        if (dateDiff !== 0) return dateDiff;
+        return b.amount - a.amount;
+      });
+    }
+
+    return activeTab === "수입" ? incomeList || [] : transactions || [];
+  })();
 
   const handleOpenModal = (type, transaction = null) => {
-    setModalType(type); 
-    setEditingTransaction(transaction || null); 
+    setModalType(type);
+    setEditingTransaction(transaction || null);
     setIsModalOpen(true);
   };
 
@@ -101,7 +120,7 @@ export default function Transactions() {
   const handleSubmitTransaction = (formData) => {
     if (editingTransaction) {
       const id = editingTransaction.incomeId || editingTransaction.expendId;
-      const type = modalType;
+      const type = editingTransaction.incomeId ? "income" : "expend";
       updateTransaction.mutate({ id, data: formData, type });
     } else {
       addTransaction.mutate(formData);
@@ -124,13 +143,25 @@ export default function Transactions() {
         </Header>
         <InnerContainer>
           <MonthNavigation>
-            <NavButton onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))}>
+            <NavButton
+              onClick={() =>
+                setCurrentDate(
+                  new Date(currentDate.getFullYear(), currentDate.getMonth() - 1)
+                )
+              }
+            >
               ‹
             </NavButton>
             <MonthDisplay>
               {currentDate.toISOString().slice(0, 7).replace("-", "년 ") + "월"}
             </MonthDisplay>
-            <NavButton onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))}>
+            <NavButton
+              onClick={() =>
+                setCurrentDate(
+                  new Date(currentDate.getFullYear(), currentDate.getMonth() + 1)
+                )
+              }
+            >
               ›
             </NavButton>
           </MonthNavigation>
@@ -144,9 +175,12 @@ export default function Transactions() {
                 <TransactionList
                   transactions={displayedTransactions}
                   currentPage={currentPage}
-                  itemsPerPage={itemsPerPage} 
+                  itemsPerPage={itemsPerPage}
                   onEdit={(transaction) =>
-                    handleOpenModal(transaction.incomeId ? "income" : "expense", transaction)
+                    handleOpenModal(
+                      transaction.incomeId ? "income" : "expend",
+                      transaction
+                    )
                   }
                   onDelete={handleDeleteTransaction}
                 />
@@ -163,7 +197,9 @@ export default function Transactions() {
                 {activeTab !== "전체" && (
                   <ActionButton
                     onClick={() =>
-                      handleOpenModal(activeTab === "수입" ? "income" : "expense")
+                      handleOpenModal(
+                        activeTab === "수입" ? "income" : "expend"
+                      )
                     }
                   >
                     작성하기

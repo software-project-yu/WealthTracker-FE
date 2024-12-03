@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Layout from "../components/Layout";
-import CircleGraph from "../components/CircleGraph";
+import Layout from "../components/common/Layout";
+import CircleGraph from "../components/common/CircleGraph";
 import styled from "styled-components";
 import Calendar from "../components/Calendar";
 import Housing from "../assets/images/categoryIMG/Housing.png";

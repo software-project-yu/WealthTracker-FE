@@ -51,4 +51,10 @@ width: 100%; /* 부모의 너비에 맞추어 100% 설정 */
 margin-bottom: 15px;
 `;
 
-
+export const OrText = styled.div`
+  margin: 20px 0;
+  text-align: center;
+  font-size: 14px;
+  color: transparent; /* 텍스트 색상을 투명으로 설정 -> 오류 떠서 추가했습니다..*/
+  opacity: 0; 
+`;

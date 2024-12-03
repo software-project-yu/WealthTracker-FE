@@ -5,8 +5,8 @@ const useFetchData = (url) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [arr, setArr] = useState([]); //배열형태 추가
-  const [total, setTotal] = useState(0); //데이터 수 추가
+  const [arr, setArr] = useState([]);
+  const [total, setTotal] = useState(0);
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);

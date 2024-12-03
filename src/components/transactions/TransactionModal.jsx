@@ -13,45 +13,24 @@ export default function TransactionModal({ isOpen, onClose, onSubmit, type, edit
   useEffect(() => {
     if (editData) {
       setFormData({
-        description: editData[type === "income" ? "incomeName" : "expendName"] || "",
+        description:
+          editData.content ||
+          (type === "income" ? editData.incomeName || "" : editData.expendName || ""),
         amount: editData.cost?.toString() || "",
         category: editData.category || "",
         asset: editData.asset || "",
-        date: editData[type === "income" ? "incomeDate" : "expendDate"] || "",
+        date: editData.date || (type === "income" ? editData.incomeDate || "" : editData.expendDate || ""),
+      });
+    } else {
+      setFormData({
+        description: "",
+        amount: "",
+        category: "",
+        asset: "",
+        date: "",
       });
     }
   }, [editData, type]);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
-  const expenseCategories = [
-    { name: "납부", icon: "💰" },
-    { name: "식비", icon: "🍕" },
-    { name: "교통", icon: "🚌" },
-    { name: "오락", icon: "🎮" },
-    { name: "쇼핑", icon: "🛍️" },
-    { name: "기타", icon: "" },
-  ];
-
-  const incomeCategories = [
-    { name: "월급", icon: "💰" },
-    { name: "용돈", icon: "💵" },
-    { name: "기타", icon: "" },
-  ];
-
-  const assets = ["현금", "은행", "카드"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -78,32 +57,19 @@ export default function TransactionModal({ isOpen, onClose, onSubmit, type, edit
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.date || !formData.amount || !formData.category || !formData.asset) {
+    if (!formData.date || !formData.amount || !formData.category || !formData.asset || !formData.description) {
       alert("모든 필드를 입력해주세요.");
       return;
     }
 
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(formData.date)) {
-      alert("날짜는 YYYY-MM-DD 형식이어야 합니다. 예: 2024-11-28");
+      alert("날짜는 YYYY-MM-DD 형식이어야 합니다.");
       return;
     }
 
-    if (Number(formData.amount) <= 0) {
+    if (isNaN(Number(formData.amount)) || Number(formData.amount) <= 0) {
       alert("금액은 0보다 커야 합니다.");
-      return;
-    }
-
-    const validCategories = type === "income" ? incomeCategories.map((c) => c.name) : expenseCategories.map((c) => c.name);
-    const validAssets = assets;
-
-    if (!validCategories.includes(formData.category)) {
-      alert("올바른 카테고리를 선택해주세요.");
-      return;
-    }
-
-    if (!validAssets.includes(formData.asset)) {
-      alert("올바른 자산을 선택해주세요.");
       return;
     }
 
@@ -115,23 +81,28 @@ export default function TransactionModal({ isOpen, onClose, onSubmit, type, edit
       asset: formData.asset,
     };
 
-    if (editData) {
-      onSubmit(editData[type === "income" ? "incomeId" : "expendId"], submitData);
-    } else {
-      onSubmit(submitData);
-    }
-
-    setFormData({
-      description: "",
-      amount: "",
-      category: "",
-      asset: "",
-      date: "",
-    });
+    onSubmit(submitData);
     onClose();
   };
 
-  const categories = type === "income" ? incomeCategories : expenseCategories;
+  if (!isOpen) return null;
+
+  const expendCategories = [
+    { name: "납부", icon: "💰" },
+    { name: "식비", icon: "🍕" },
+    { name: "교통", icon: "🚌" },
+    { name: "오락", icon: "🎮" },
+    { name: "쇼핑", icon: "🛍️" },
+    { name: "기타", icon: "" },
+  ];
+
+  const incomeCategories = [
+    { name: "월급", icon: "💰" },
+    { name: "용돈", icon: "💵" },
+    { name: "기타", icon: "" },
+  ];
+
+  const categories = type === "income" ? incomeCategories : expendCategories;
 
   return (
     <ModalOverlay onClick={onClose}>
@@ -154,7 +125,7 @@ export default function TransactionModal({ isOpen, onClose, onSubmit, type, edit
             <Input
               name="amount"
               type="number"
-              placeholder="금액을 입력하세요"
+              placeholder="금액을 입력해 주세요"
               value={formData.amount}
               onChange={handleChange}
               required
@@ -178,7 +149,7 @@ export default function TransactionModal({ isOpen, onClose, onSubmit, type, edit
           <div>
             <Label>자산</Label>
             <ButtonGrid>
-              {assets.map((asset) => (
+              {["현금", "은행", "카드"].map((asset) => (
                 <CategoryButton
                   key={asset}
                   type="button"
@@ -200,14 +171,13 @@ export default function TransactionModal({ isOpen, onClose, onSubmit, type, edit
               required
             />
           </div>
-          <SaveButton type="submit">
-            {editData ? "수정하기" : "저장하기"}
-          </SaveButton>
+          <SaveButton type="submit">저장</SaveButton>
         </Form>
       </ModalContent>
     </ModalOverlay>
   );
 }
+
 
 const ModalOverlay = styled.div`
   position: fixed;
