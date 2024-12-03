@@ -22,7 +22,7 @@ export default function SideMenu() {
   const API_URL = import.meta.env.VITE_SERVER_URL;
   //경로 배열
   const pageName = [
-    { name: "홈", imageSrc: icon1, imageSrcWhite: icon1_white, page: "/" },
+    { name: "홈", imageSrc: icon1, imageSrcWhite: icon1_white, page: "/main" },
     {
       name: "수입/지출 내역",
       imageSrc: icon2,
@@ -63,7 +63,7 @@ export default function SideMenu() {
   //로그아웃
   const onClickLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
-      nav("/login");
+      nav("/");
       //토큰 삭제
       localStorage.removeItem("token");
     }

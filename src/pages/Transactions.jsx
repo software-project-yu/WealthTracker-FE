@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import Layout from "../components/common/Layout";
 import Tabs from "../components/transactions/Tabs";
 import TransactionList from "../components/transactions/TransactionList";
