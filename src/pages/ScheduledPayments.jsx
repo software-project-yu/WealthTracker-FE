@@ -69,28 +69,28 @@ function ScheduledPayments() {
     setIsModalOpen(false);
   };
 
-const handleSave = (paymentData) => {
-  if (
-    !paymentData.paymentDetail ||
-    !paymentData.dueDate ||
-    !paymentData.lastPayment ||
-    !paymentData.cost ||
-    !paymentData.tradeName
-  ) {
-    alert("모든 필드를 입력해야 합니다.");
-    return;
-  }
-
-  if (editingPayment) {
-    updatePayment.mutate({
-      id: editingPayment.paymentId,
-      data: paymentData,
-    });
-  } else {
-    addPayment.mutate(paymentData);
-  }
-  closeModal();
-};
+  const handleSave = (paymentData) => {
+    if (
+      !paymentData.paymentDetail ||
+      !paymentData.dueDate ||
+      !paymentData.lastPayment ||
+      !paymentData.cost ||
+      !paymentData.tradeName
+    ) {
+      alert("모든 필드를 입력해야 합니다.");
+      return;
+    }
+  
+    if (editingPayment) {
+      updatePayment.mutate({
+        id: editingPayment.paymentId,
+        data: paymentData,
+      });
+    } else {
+      addPayment.mutate(paymentData);
+    }
+    closeModal();
+  };
 
   const handleDelete = (paymentId) => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
@@ -178,19 +178,11 @@ const handleSave = (paymentData) => {
   );
 }
 
-const ScheduledPaymentsContainer = styled.div`
-  width: 1104px;
-  height: 800px;
-  margin-left: 15px;
-  margin-top: 15px;
-  top: 164px;
-  left: 304px;
-  padding: 24px 0px 0px 0px;
-  gap: 16px;
-  border-radius: 8px;
-  opacity: 0px;
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0px 20px 25px 0px rgba(76, 103, 100, 0.1);
+export default ScheduledPayments;
+
+// Styled components
+const Container = styled.div`
+  margin-top: 20px;
 `;
 
 const PageTitle = styled.h1`
@@ -278,7 +270,7 @@ const DeleteButton = styled.button`
 
 const ActionButton = styled.button`
   position: absolute;
-  right: 60px;
+  right: 30px;
   height: 40px;
   padding: 0 24px;
   background-color: ${({ theme }) => theme.colors.blue};
@@ -287,7 +279,6 @@ const ActionButton = styled.button`
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
-   margin-top: -110px;
 
   &:hover {
     background: ${({ theme }) => theme.colors.primaryHover};
@@ -306,5 +297,4 @@ const PaginationWrapper = styled.div`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  margin-top: -110px;
 `;
