@@ -21,4 +21,11 @@
 
 
 
+## 프로젝트 구조
+<img width="240" alt="image" src="https://github.com/user-attachments/assets/2ae8734c-4c53-4de5-94fa-28614d6f36e3">
+<img width="260" alt="image" src="https://github.com/user-attachments/assets/0a78decb-9b4a-41ce-b7c4-e79f7aaaa719">
+<img width="225" alt="image" src="https://github.com/user-attachments/assets/88c137c3-bea0-4533-aef2-57fb64434f3a">
+
+
+
 
