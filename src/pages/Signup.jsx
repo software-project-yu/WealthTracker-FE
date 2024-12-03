@@ -4,12 +4,10 @@ import {
   Title,
   Form,
   Button,
-  OrText,
   InputWrapper
 } from "../components/Login";
 import styled from "styled-components";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { BsChatFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const Input = styled.input`
@@ -94,7 +92,7 @@ const LoginLink = styled.span`
   font-size: 12px;
   color: #007bff;
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
 `;
 
 const Alreadacc = styled.h5`
@@ -111,7 +109,7 @@ const Row = styled.div`
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [nickname, setNickname] = useState("");
+  const [nickName, setNickname] = useState("");
   const [name, setName] = useState("");
   const [certification, setCertification] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -213,10 +211,10 @@ function Signup() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
     // 비밀번호: 최소 8자, 대문자/소문자/숫자/특수문자 각각 최소 1개
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*])[a-zA-Z\\d!@#$%^&*]{8,15}$/;
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,15}$/;
   
     // 닉네임 검증
-    if (!nicknameRegex.test(nickname)) {
+    if (!nicknameRegex.test(nickName)) {
       alert("닉네임은 6~15자의 영문, 숫자만 입력 가능합니다.");
       return;
     }
@@ -238,7 +236,7 @@ function Signup() {
     try {
       const response = await axios.post(`${API_URL}/api/signup`, {
         name,
-        nickname,
+        nickName,
         email,
         password,
       });
@@ -303,7 +301,7 @@ function Signup() {
           <Input
             type="text"
             placeholder="닉네임을 입력해 주세요.(영어+숫자6~15자)"
-            value={nickname}
+            value={nickName}
             onChange={(e) => setNickname(e.target.value)}
           />
           <label>이메일 주소</label>
@@ -352,13 +350,6 @@ function Signup() {
         <Button className="login" type="button" onClick={handleSignup}>
           회원가입
         </Button>
-
-        <OrText>or sign up with</OrText>
-
-        <Button className="kakao" type="button">
-          <BsChatFill /> 카카오 계정으로 로그인
-        </Button>
-
         <Row>
           <Alreadacc>이미 계정이 있으신가요?</Alreadacc>
           <LoginLink onClick={() => navigate("/login")}>로그인하기</LoginLink>

@@ -269,7 +269,12 @@ function SecuritySettings() {
         />
 
         <label>새 비밀번호</label>
-        <input type="password" placeholder="********" />
+        <input
+          type="password"
+          placeholder="********"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
 
         <label>비밀번호 확인</label>
         <input type="password" placeholder="********" />
