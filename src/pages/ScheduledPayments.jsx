@@ -93,8 +93,8 @@ export default function ScheduledPayments() {
 }
 
 const ScheduledPaymentsContainer = styled.div`
-  width: 1104px;;
-  height: 800px;;
+  width: 1104px;
+  height: 800px;
   margin-left: 15px;
   margin-top: 15px;
   top: 164px;

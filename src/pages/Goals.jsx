@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import Layout from "../components/Layout";
-import CircleGraph from "../components/CircleGraph";
+import React, { useState, useEffect } from "react";
+import Layout from "../components/common/Layout";
+import SavingsGoal from "../components/main/SavingsGoal";
 import styled from "styled-components";
 import Calendar from "../components/Calendar";
 import Housing from "../assets/images/categoryIMG/Housing.png";
@@ -9,53 +9,123 @@ import Transport from "../assets/images/categoryIMG/Transport.png";
 import Game from "../assets/images/categoryIMG/Game.png";
 import Shopping from "../assets/images/categoryIMG/Shopping.png";
 import Housing2 from "../assets/images/categoryIMG/Housing2.png";
+import GoalModal2 from "../components/GoalModal2";
 import GoalModal1 from "../components/GoalModal1";
 
 export default function Goals() {
   const categories = [
-    { name: "납부", goal: 250000, spent: 280000, icon: Housing },
-    { name: "식비", goal: 250000, spent: 220000, icon: Food },
-    { name: "교통", goal: 250000, spent: 250000, icon: Transport },
-    { name: "오락", goal: 250000, spent: 270000, icon: Game },
-    { name: "쇼핑", goal: 250000, spent: 240000, icon: Shopping },
-    { name: "기타", goal: 250000, spent: 260000, icon: Housing2 },
+    { name: "납부", apiCategory: "PAYMENT", icon: Housing },
+    { name: "식비", apiCategory: "FOOD", icon: Food },
+    { name: "교통", apiCategory: "TRANSPORTATION", icon: Transport },
+    { name: "오락", apiCategory: "GAME", icon: Game },
+    { name: "쇼핑", apiCategory: "SHOPPING", icon: Shopping },
+    { name: "기타", apiCategory: "ETC", icon: Housing2 },
   ];
 
-  const monthlyData = {
-    1: { goal: 200000, current: 80000 },
-    2: { goal: 250000, current: 120000 },
-    3: { goal: 300000, current: 180000 },
-    4: { goal: 150000, current: 60000 },
-    5: { goal: 220000, current: 200000 },
-    6: { goal: 180000, current: 120000 },
-    7: { goal: 240000, current: 150000 },
-    8: { goal: 260000, current: 170000 },
-    9: { goal: 300000, current: 270000 },
-    10: { goal: 200000, current: 100000 },
-    11: { goal: 280000, current: 250000 },
-    12: { goal: 320000, current: 300000 },
-  };
-
-  const [selectedMonth, setSelectedMonth] = useState(1);
-  const { goal, current } = monthlyData[selectedMonth];
-
-  const handleMonthChange = (e) => {
-    setSelectedMonth(parseInt(e.target.value));
-  };
-
+  const [isGoalModal1Open, setIsGoalModal1Open] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [goalAmount, setGoalAmount] = useState(200000);
+  const [targetId, setTargetId] = useState(null);
+  const [savingsTargetAmount, setSavingsTargetAmount] = useState(0);
+  const [currentAmount, setCurrentAmount] = useState(0); // 현재 금액 상태 추가
+  const [categoryTargets, setCategoryTargets] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState("");
 
-  const handleOpenModal = () => {
+  useEffect(() => {
+    categories.forEach((category) => {
+      fetch(
+        `${import.meta.env.VITE_SERVER_URL}/api/category-target/${
+          category.apiCategory
+        }`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+          },
+        }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `Failed to fetch target for category ${category.apiCategory}`
+            );
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setCategoryTargets((prevTargets) => ({
+            ...prevTargets,
+            [category.apiCategory]: data,
+          }));
+        })
+        .catch((error) => {
+          console.error(
+            `Error fetching target for ${category.apiCategory}:`,
+            error
+          );
+        });
+    });
+
+    // 저축 목표 가져오기
+    fetch(`${import.meta.env.VITE_SERVER_URL}/api/savings-target`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch savings target");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Fetched savings target:", data); // 데이터 확인을 위한 로그 추가
+        setSavingsTargetAmount(data.targetAmount);
+        setCurrentAmount(data.currentAmount); // 현재 금액 설정
+      })
+      .catch((error) => {
+        console.error("Error fetching savings target:", error);
+      });
+  }, []);
+
+  const handleSaveTarget = (category, newTargetAmount) => {
+    console.log(
+      `새로운 목표 금액 저장: ${newTargetAmount} (카테고리: ${category})`
+    );
+    setCategoryTargets((prevTargets) => ({
+      ...prevTargets,
+      [category]: {
+        ...prevTargets[category],
+        targetAmount: newTargetAmount,
+      },
+    }));
+  };
+
+  const handleSaveSavingsTarget = (newTargetAmount) => {
+    console.log("새로운 저축 목표 금액 저장:", newTargetAmount);
+    setSavingsTargetAmount(newTargetAmount);
+  };
+
+  const handleUpdateCurrentAmount = (addedAmount) => {
+    setCurrentAmount((prevAmount) => prevAmount + addedAmount);
+  };
+
+  const handleOpenGoalModal1 = () => {
+    setIsGoalModal1Open(true);
+  };
+
+  const handleCloseGoalModal1 = () => {
+    setIsGoalModal1Open(false);
+  };
+
+  const handleOpenModal = (category) => {
+    setSelectedCategory(category);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleSave = () => {
-    console.log("저장된 목표 금액:", goalAmount);
     setIsModalOpen(false);
   };
 
@@ -64,51 +134,45 @@ export default function Goals() {
       <PageWrapper>
         <Section>
           <SectionTitle>저축 목표</SectionTitle>
-          <SavingsGoal>
+          <SavingGoal>
             <GoalCard>
-              <GoalHeader>
-                한달 저축 목표
-                <Dropdown value={selectedMonth} onChange={handleMonthChange}>
-                  {Object.keys(monthlyData).map((month) => (
-                    <option key={month} value={month}>
-                      {month}월
-                    </option>
-                  ))}
-                </Dropdown>
-              </GoalHeader>
               <GoalContent>
-                <AmountInfo>
-                  <AmountRow>
-                    <Label>목표 금액</Label>
-                    <Amount>{goal.toLocaleString()}원</Amount>
-                  </AmountRow>
-                  <AmountRow>
-                    <Label>현재 금액</Label>
-                    <Amount>{current.toLocaleString()}원</Amount>
-                  </AmountRow>
-                  <Button1 onClick={handleOpenModal}>목표 수정하기</Button1>{" "}
-                </AmountInfo>
                 <GraphWrapper>
-                  <CircleGraph
-                    goalAmount={goal}
-                    currentAmount={current}
-                    width={250}
-                    height={110}
+                  <SavingsGoal
+                    targetAmount={savingsTargetAmount}
+                    setTargetAmount={handleSaveSavingsTarget}
+                    currentAmount={currentAmount} // 현재 금액 전달
+                    setCurrentAmount={handleUpdateCurrentAmount}
+                    setTargetId={setTargetId}
                   />
+                  <Button1 onClick={handleOpenGoalModal1}>
+                    {savingsTargetAmount === 0
+                      ? "목표 생성하기"
+                      : "목표 수정하기"}
+                  </Button1>
                 </GraphWrapper>
               </GoalContent>
             </GoalCard>
             <CalendarWrapper>
-              <Calendar />
+              <Calendar
+                targetId={targetId}
+                onSave={handleUpdateCurrentAmount}
+              />{" "}
+              {/* 저축 금액 업데이트 함수 전달 */}
             </CalendarWrapper>
-          </SavingsGoal>
+          </SavingGoal>
         </Section>
-
         <Section>
           <SectionTitle>이번 달 지출 목표</SectionTitle>
           <ExpenseGoals>
             {categories.map((category, index) => {
-              const difference = category.spent - category.goal;
+              const targetData = categoryTargets[category.apiCategory] || {
+                targetAmount: 0,
+                currentExpend: 0,
+                message: "데이터를 불러오는 중입니다.",
+              };
+              const difference =
+                targetData.currentExpend - targetData.targetAmount;
               const isOverBudget = difference > 0;
 
               return (
@@ -126,9 +190,13 @@ export default function Goals() {
                       {isOverBudget ? "더 썼습니다." : "덜 썼습니다."}
                     </GoalText>
                     <StatusText2>
-                      목표 금액: {category.goal.toLocaleString()}원
+                      목표 금액: {targetData.targetAmount.toLocaleString()}원
                     </StatusText2>
-                    <Button2 onClick={handleOpenModal}>수정하기</Button2>{" "}
+                    <Button2
+                      onClick={() => handleOpenModal(category.apiCategory)}
+                    >
+                      수정하기
+                    </Button2>
                   </ContentWrapper>
                 </GoalCard2>
               );
@@ -136,17 +204,32 @@ export default function Goals() {
           </ExpenseGoals>
         </Section>
         <GoalModal1
+          isOpen={isGoalModal1Open}
+          onClose={handleCloseGoalModal1}
+          targetAmount={savingsTargetAmount}
+          setTargetAmount={handleSaveSavingsTarget}
+          onSave={handleSaveSavingsTarget}
+          targetId={targetId}
+        />
+        <GoalModal2
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          goalAmount={goalAmount}
-          setGoalAmount={setGoalAmount}
-          onSave={handleSave}
+          targetAmount={categoryTargets[selectedCategory]?.targetAmount || 0}
+          setTargetAmount={(newTargetAmount) =>
+            handleSaveTarget(selectedCategory, newTargetAmount)
+          }
+          onSave={(newTargetAmount) =>
+            handleSaveTarget(selectedCategory, newTargetAmount)
+          }
+          selectedCategory={selectedCategory} // 선택된 카테고리 전달
+          currentExpend={categoryTargets[selectedCategory]?.currentExpend || 0} // currentExpend 전달
         />
       </PageWrapper>
     </Layout>
   );
 }
 
+// Styled Components
 const PageWrapper = styled.div`
   padding: 20px;
   display: flex;
@@ -171,7 +254,7 @@ const SectionTitle = styled.h2`
   margin-bottom: 10px;
 `;
 
-const SavingsGoal = styled.div`
+const SavingGoal = styled.div`
   display: flex;
   gap: 20px;
   align-items: stretch;
@@ -180,6 +263,7 @@ const SavingsGoal = styled.div`
 
 const GoalHeader = styled.div`
   display: flex;
+
   justify-content: space-between;
   align-items: center;
   font-family: Pretendard;
@@ -189,19 +273,8 @@ const GoalHeader = styled.div`
   text-align: left;
   text-underline-position: from-font;
   text-decoration-skip-ink: none;
-  font-color: rgba(0, 0, 0, 1);
+  color: rgba(0, 0, 0, 1);
   margin-left: 15px;
-`;
-
-const Dropdown = styled.select`
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  width: 143px;
-  height: 32px;
-  top: 176px;
-  left: 486px;
-  gap: 0px;
-  border-radius: 8px;
 `;
 
 const GoalCard = styled.div`
@@ -210,9 +283,8 @@ const GoalCard = styled.div`
   padding: 24px 16px;
   gap: 16px;
   border-radius: 8px;
-  background: #fff;
+  background: #fff
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -226,51 +298,22 @@ const GoalContent = styled.div`
   padding: 0 8px;
 `;
 
-const AmountInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* 중앙 정렬 */
-  gap: 8px;
-  margin-bottom: 50px;
-`;
-
 const GraphWrapper = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 200px;
-  height: 150px;
-  margin-top: 0;
-  padding-right: 8px;
-`;
-
-const AmountRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  gap: 10px;
+  padding: : 0;
+  
 `;
 
-const Label = styled.span`
-  color: rgba(159, 159, 159, 1);
-  font-family: Pretendard;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  text-align: left;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  padding: 5px;
-`;
-
-const Amount = styled.span`
-  font-family: Pretendard;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 24px;
-  text-align: left;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
+const ParentContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 버튼을 가로 중앙으로 정렬 */
+  position: relative; /* 버튼 위치 지정 가능 */
 `;
 
 const Button1 = styled.button`
@@ -280,27 +323,22 @@ const Button1 = styled.button`
   cursor: pointer;
   width: 120px;
   height: 32px;
-  gap: 10px;
   border-radius: 5px;
   font-family: Pretendard;
   font-size: 14px;
   font-weight: 500;
   line-height: 16.71px;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  margin-top: 20px; /* 위쪽 여백 */
-  align-self: center; /* 부모 컨테이너 기준으로 수평 중앙 정렬 */
-  position: relative;
-  margin-bottom: -20px; /* 아래로 조금 더 당김 */
+  text-align: center;
 `;
 
 const Button2 = styled.button`
   background: white;
+
   cursor: pointer;
   margin-top: 20px;
+
   color: rgba(0, 123, 255, 1);
   border: 1px solid rgba(0, 123, 255, 1);
-  cursor: pointer;
   width: 120px;
   height: 32px;
   gap: 10px;
@@ -366,25 +404,23 @@ const CategoryName = styled.span`
   font-family: Pretendard;
   font-size: 13px;
   font-weight: 500;
-  line-height: 16px;
+  line-height: 16
   text-align: left;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  margin-top: -52px; /* 아이콘과의 간격 */
+  margin-top: -52px;
   margin-left: -42px;
 `;
 
 const StatusText = styled.span`
   font-size: 0.9rem;
   color: #666;
-  margin-left: 20px; /* 오른쪽으로 살짝 이동 */
+  margin-left: 20px;
 `;
 
 const StatusText2 = styled.span`
   font-size: 0.9rem;
   color: #666;
-  margin-left: 20px; /* 오른쪽으로 살짝 이동 */
-  margin-top: 20px; /* 아래로 살짝 이동 */
+  margin-left: 20px;
+  margin-top 20px; /* 아래로 살짝 이동 */
 `;
 
 const GoalText = styled.div`

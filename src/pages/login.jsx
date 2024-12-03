@@ -22,7 +22,6 @@ const Input = styled.input`
   background: transparent; /* 배경 투명 */
   color: #000; /* 텍스트 색상 */
   outline: none; /* 기본 포커스 테두리 제거 */
-
   ::placeholder {
     color: #aaa; /* Placeholder 색상 */
   }
