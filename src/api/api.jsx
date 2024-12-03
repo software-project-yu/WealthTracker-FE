@@ -6,9 +6,6 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  httpAgent: new https.Agent({
-    rejectUnauthorized: false,
-  }),
 });
 //임시토큰 사용
 

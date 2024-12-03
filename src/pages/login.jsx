@@ -13,7 +13,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 const Input = styled.input`
-   width: 85%;
+  width: 85%;
   padding: 10px;
   padding-right: 30px;
   border: 1px solid #ccc; /* 기본 테두리 색상 */
@@ -29,9 +29,9 @@ const Input = styled.input`
 
   &:focus {
     border: 1px solid black; /* 클릭/포커스 시 진한 테두리 */
-    
+
     transition: border-color 0.3s ease, box-shadow 0.3s ease; /* 애니메이션 */
-  
+  }
 `;
 
 const PasswordToggle = styled.button`
