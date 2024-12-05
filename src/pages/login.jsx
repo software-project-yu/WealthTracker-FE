@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { BsChatFill } from "react-icons/bs";
@@ -7,9 +7,9 @@ import {
   Title,
   Form,
   Button,
-  InputWrapper
+  InputWrapper,
 } from "../components/Login.js";
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 const Input = styled.input`
   width: 85%;
@@ -64,7 +64,11 @@ const CheckboxLabel = styled.label`
   font-size: 12px;
   margin-left: 5px;
 `;
-
+export const OrText = styled.div`
+  margin: 20px 0;
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.gray04};
+`;
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -85,7 +89,6 @@ function Login() {
   }, []);
 
   const handleLogin = async () => {
-    console.log(`${API_URL}`);
     try {
       const response = await axios.post(`${API_URL}/api/login`, {
         email,
@@ -102,7 +105,7 @@ function Login() {
           localStorage.removeItem("email");
         }
         alert("로그인 성공!");
-        navigate("/"); // 로그인 성공 후 홈 페이지로 이동
+        navigate("/main"); // 로그인 성공 후 홈 페이지로 이동
       } else {
         alert("로그인 실패: 잘못된 이메일 또는 비밀번호입니다.");
       }
@@ -120,15 +123,17 @@ function Login() {
     <Wrapper>
       <Title>WealthTracker</Title>
       <Form onSubmit={(e) => e.preventDefault()}>
-        <div>
-          <label>이메일 주소</label>
-          <Input
-            type="email"
-            placeholder="yeungnam@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+        <InputWrapper>
+          <div>
+            <label>이메일 주소</label>
+            <Input
+              type="email"
+              placeholder="yeungnam@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+        </InputWrapper>
 
         <InputWrapper>
           <label>비밀번호</label>
@@ -140,7 +145,9 @@ function Login() {
           <PasswordToggle type="button" onClick={togglePasswordVisibility}>
             {showPassword ? <FaEye /> : <FaEyeSlash />}
           </PasswordToggle>
-          <ForgotPasswordLink to="/findpw">비밀번호를 잊으셨나요?</ForgotPasswordLink>
+          <ForgotPasswordLink to="/findpw">
+            비밀번호를 잊으셨나요?
+          </ForgotPasswordLink>
         </InputWrapper>
 
         <CheckboxWrapper>
@@ -162,7 +169,11 @@ function Login() {
           {<BsChatFill />} 카카오 계정 로그인
         </Button>
 
-        <Button className="signup" type="button" onClick={() => navigate("/signup")}>
+        <Button
+          className="signup"
+          type="button"
+          onClick={() => navigate("/signup")}
+        >
           회원가입 하기
         </Button>
       </Form>

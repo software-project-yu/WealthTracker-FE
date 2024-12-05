@@ -11,10 +11,12 @@ const api = axios.create({
 
 const token = localStorage.setItem("token");
 
+
 // 요청 인터셉터
 api.interceptors.request.use(
   (config) => {
     const accessToken = token;
+
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }

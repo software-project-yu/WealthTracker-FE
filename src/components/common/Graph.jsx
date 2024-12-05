@@ -2,6 +2,10 @@ import { ResponsiveBar } from "@nivo/bar";
 
 const Graph = ({ data }) => {
   // 데이터에서 최고 금액을 찾고 5개 구간으로 나누기
+  if (!Array.isArray(data)) {
+    console.error("Invalid data provided to Graph component", data);
+    return null;
+  }
   const maxNum =
     data &&
     Math.max(

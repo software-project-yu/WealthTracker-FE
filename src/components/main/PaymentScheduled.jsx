@@ -21,28 +21,28 @@ export default function PaymentScheduled() {
   ];
 
   const { data, isLoading, error } = useFetchData("/api/payment/recent");
-
   //데이터 날짜 포맷
   const dateFormat = (date) => {
     //string -> date Format
     const paymentDate = new Date(date);
+
     const convertMonth = monthName[paymentDate.getMonth()];
     const convertDay = paymentDate.getDate();
     return { convertMonth, convertDay };
   };
+  const isValidData = Array.isArray(data) && data.length > 0;
   if (error) return <Error />;
   if (isLoading) return <LoadingSpinners />;
   return (
     <Container>
-      {/* 데이터가 0이면 */}
-      {data && data.length == 0 ? (
+      {!isValidData ? (
         <NullText>결제예정 내역이 없습니다.</NullText>
       ) : (
-        data &&
         data.map((item) => {
-          const { convertMonth, convertDay } = dateFormat(item.dueDate);
+
+          const { convertMonth, convertDay } = dateFormat(item?.dueDate);
           return (
-            <ContentContainer key={item.id}>
+            <ContentContainer key={item.paymentId}>
               <LeftBox>
                 <MonthText>{convertMonth}</MonthText>
                 <DayText>{convertDay}</DayText>

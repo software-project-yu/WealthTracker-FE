@@ -25,7 +25,7 @@ const SubContainer = styled.div`
   width: 100%;
   max-width: 1440px;
   height: 1024px;
-  box-shawdow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.colors.gray00};
 `;
 

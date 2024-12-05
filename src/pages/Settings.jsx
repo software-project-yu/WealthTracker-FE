@@ -110,9 +110,6 @@ function AccountSettings({ name, nickName, loading, error, onEdit }) {
       <ProfileInfo>
         <p>이름</p>
         <InfoBox>{name}</InfoBox>
-
-        <p>유저이름</p>
-        <InfoBox className="info-box">홍길동</InfoBox>
         <p>유저 이름</p>
         <InfoBox>{nickName}</InfoBox>
       </ProfileInfo>
