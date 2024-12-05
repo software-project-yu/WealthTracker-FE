@@ -1,7 +1,7 @@
 name: React build
 on: 
   pull_request: # main Branch에서 push 이벤트가 일어났을 때만 실행
-    types: [closed] #PR이 병합(closed)될 때 실행
+    types: [closed] # PR이 병합(closed)될 때 실행
     branches:
       - main
 
