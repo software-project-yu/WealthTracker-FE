@@ -23,6 +23,11 @@ jobs:
 
       - name: Install Dependencies # 의존 파일 설치
         run: npm install # npm install을 실행할 경로로 설정
+        
+      - name: Create .env file # .env 파일 생성
+        run: |
+          echo "VITE_SERVER_URL=${{ secrets.VITE_SERVER_URL }}" >> .env
+        
 
       - name: Build # React Build
         run: npm run build # npm run build를 실행할 경로로 설정
