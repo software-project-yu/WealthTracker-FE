@@ -9,7 +9,7 @@ const api = axios.create({
 });
 //임시토큰 사용
 
-const token = localStorage.setItem("token");
+const token = localStorage.getItem("token");
 
 
 // 요청 인터셉터
