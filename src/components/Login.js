@@ -50,3 +50,8 @@ export const InputWrapper = styled.div`
   width: 100%; /* 부모의 너비에 맞추어 100% 설정 */
   margin-bottom: 15px;
 `;
+export const OrText = styled.div`
+  margin: 20px 0;
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.gray04};
+`;
