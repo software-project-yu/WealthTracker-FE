@@ -1,5 +1,5 @@
 import axios from "axios";
-import https from "https";
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
   timeout: 10000,
