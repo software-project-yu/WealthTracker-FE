@@ -127,7 +127,9 @@ function ScheduledPayments() {
                 </tr>
               ) : isError ? (
                 <tr>
-                  <Td colSpan="6">서버와의 연결에 문제가 발생했습니다.</Td>
+                  <Td colSpan="6">
+                    <Error />
+                  </Td>
                 </tr>
               ) : currentItems.length === 0 ? (
                 <tr>
@@ -136,7 +138,12 @@ function ScheduledPayments() {
               ) : (
                 currentItems.map((payment) => (
                   <Tr key={payment.paymentId}>
-                    <Td>{payment.dueDate}</Td>
+                    <Td>
+                      <DateContainer>
+                        <Month>{new Date(payment.dueDate).toLocaleString('en-US', { month: 'short' })}</Month>
+                        <Day>{new Date(payment.dueDate).getDate()}</Day>
+                      </DateContainer>
+                    </Td>
                     <Td>{payment.tradeName}</Td>
                     <Td>{payment.paymentDetail}</Td>
                     <Td>{payment.lastPayment}</Td>
@@ -180,7 +187,6 @@ function ScheduledPayments() {
 
 export default ScheduledPayments;
 
-// Styled components
 const Container = styled.div`
   margin-top: 20px;
 `;
@@ -216,6 +222,15 @@ const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+
+  th, td {
+    &:first-child {
+      width: 120px;
+    }
+    &:last-child {
+    width: 140px;
+    }
+  }
 `;
 
 const Th = styled.th`
@@ -235,6 +250,36 @@ const Td = styled.td`
   padding: 12px 8px;
   text-align: center;
   color: ${({ theme }) => theme.colors.gray05};
+
+  vertical-align: middle;
+  &:first-child {
+    padding: 16px 8pox;
+  }
+`;
+
+const DateContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ theme }) => theme.colors.gray00};
+  border-radius: 4px;
+  padding: 8px 16px;
+  width: 60px;
+  height: 70px;
+  margin: 0 auto;
+`;
+
+const Month = styled.span`
+  font-size: 15px;
+  color: ${({ theme }) => theme.colors.gray05};
+  margin-bottom: 8px;
+  text-transform: capitalize; 
+`;
+
+const Day = styled.span`
+  font-size: 18px;
+  font-weight: bold;
 `;
 
 const ButtonGroup = styled.div`
@@ -270,7 +315,7 @@ const DeleteButton = styled.button`
 
 const ActionButton = styled.button`
   position: absolute;
-  right: 30px;
+  right: 50px;
   height: 40px;
   padding: 0 24px;
   background-color: ${({ theme }) => theme.colors.blue};
@@ -290,7 +335,7 @@ const Footer = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
-  margin-top: 20px;
+  margin-top: -40px;
 `;
 
 const PaginationWrapper = styled.div`
