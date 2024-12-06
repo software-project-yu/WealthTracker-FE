@@ -13,13 +13,13 @@ import ErrorPage from "./pages/ErrorPage";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Main />} />
+      <Route path="/main" element={<Main />} />
       <Route path="/transactions" element={<Transactions />} />
       <Route path="/scheduledpayments" element={<ScheduledPayments />} />
       <Route path="/expenses" element={<Expense />} />
       <Route path="/goals" element={<Goals />} />
       <Route path="/settings" element={<Settings />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/findpw" element={<FindPassword />} />
       {/* 404 페이지 */}

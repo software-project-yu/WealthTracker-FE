@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import useFetchData from "../../hooks/useFetch";
+import Error from "../common/Error";
+import LoadingSpinners from "../common/LoadingSpinners";
 
 export default function PaymentScheduled() {
   //월 리스트
@@ -16,51 +19,44 @@ export default function PaymentScheduled() {
     "Nov",
     "Dec",
   ];
-  const data = [
-    {
-      id: 1,
-      date: "2022-11-11",
-      content: "Netflix-스탠다드 멤버쉽",
-      company: "Netflix",
-      cost: 20000,
-    },
-    {
-      id: 2,
-      date: "2022-12-23",
-      content: "Netflix-스탠다드 멤버쉽",
-      company: "Netflix",
-      cost: 40000,
-    },
-  ];
+
+  const { data, isLoading, error } = useFetchData("/api/payment/recent");
   //데이터 날짜 포맷
   const dateFormat = (date) => {
     //string -> date Format
     const paymentDate = new Date(date);
+
     const convertMonth = monthName[paymentDate.getMonth()];
     const convertDay = paymentDate.getDate();
     return { convertMonth, convertDay };
   };
-
+  const isValidData = Array.isArray(data) && data.length > 0;
+  if (error) return <Error />;
+  if (isLoading) return <LoadingSpinners />;
   return (
     <Container>
-      {data &&
+      {!isValidData ? (
+        <NullText>결제예정 내역이 없습니다.</NullText>
+      ) : (
         data.map((item) => {
-          const { convertMonth, convertDay } = dateFormat(item.date);
+
+          const { convertMonth, convertDay } = dateFormat(item?.dueDate);
           return (
-            <ContentContainer key={item.id}>
+            <ContentContainer key={item.paymentId}>
               <LeftBox>
                 <MonthText>{convertMonth}</MonthText>
                 <DayText>{convertDay}</DayText>
               </LeftBox>
               <CenterBox>
-                <Text>{item.company}</Text>
-                <Text>{item.content}</Text>
-                <DateText>{item.date.replaceAll("-", ".")}</DateText>
+                <Text>{item.tradeName}</Text>
+                <Text>{item.paymentDetail}</Text>
+                <DateText>{item.lastPayment.replaceAll("-", ".")}</DateText>
               </CenterBox>
               <RightBox>{item.cost.toLocaleString("ko-KR")}원</RightBox>
             </ContentContainer>
           );
-        })}
+        })
+      )}
     </Container>
   );
 }
@@ -68,7 +64,7 @@ export default function PaymentScheduled() {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
- justify-content: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
 `;
@@ -77,7 +73,7 @@ const ContentContainer = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray00};
   justify-content: space-between;
   align-items: center;
-  padding:0.5rem;
+  padding: 0.5rem;
 
   &:last-child {
     border-bottom: none;
@@ -120,7 +116,11 @@ const RightBox = styled.div`
   border-radius: 0.5rem;
   height: fit-content;
   padding: 0.5rem;
-  display: flex;          
+  display: flex;
   align-items: center;
   justify-content: center;
+`;
+const NullText = styled.a`
+  font-size: 1.5rem;
+  font-weight: 700;
 `;

@@ -110,9 +110,6 @@ function AccountSettings({ name, nickName, loading, error, onEdit }) {
       <ProfileInfo>
         <p>이름</p>
         <InfoBox>{name}</InfoBox>
-
-        <p>유저이름</p>
-        <InfoBox className="info-box">홍길동</InfoBox>
         <p>유저 이름</p>
         <InfoBox>{nickName}</InfoBox>
       </ProfileInfo>
@@ -269,7 +266,12 @@ function SecuritySettings() {
         />
 
         <label>새 비밀번호</label>
-        <input type="password" placeholder="********" />
+        <input
+          type="password"
+          placeholder="********"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
 
         <label>비밀번호 확인</label>
         <input type="password" placeholder="********" />

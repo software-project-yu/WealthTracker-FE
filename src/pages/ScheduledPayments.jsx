@@ -1,202 +1,300 @@
 import React, { useState } from "react";
-import Layout from "../components/common/Layout";
 import styled from "styled-components";
+import Layout from "../components/common/Layout";
+import Pagination from "../components/transactions/Pagination";
 import ScheduledModal from "../components/ScheduledModal";
+import Error from "../components/common/Error";
+import LoadingSpinners from "../components/common/LoadingSpinners";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useFetchSch from "../hooks/useFetchSch";
+import {
+  createScheduledPayment,
+  updateScheduledPayment,
+  deleteScheduledPayment,
+} from "../api/scheduleAPI";
 
-export default function ScheduledPayments() {
+function ScheduledPayments() {
+  const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [payments] = useState([
-    {
-      id: 1,
-      date: "2024-05-15",
-      service: "넷플릭스",
-      details: "스탠다드 멤버십",
-      lastPayment: "2024-05-15",
-      amount: "13,500원",
-    },
-    {
-      id: 2,
-      date: "2024-06-20",
-      service: "유튜브 프리미엄",
-      details: "프리미엄 멤버십",
-      lastPayment: "2024-06-20",
-      amount: "11,000원",
-    },
-  ]);
+  const [editingPayment, setEditingPayment] = useState(null);
 
-  const monthName = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+  const queryClient = useQueryClient();
+  const itemsPerPage = 5;
 
-  const dateFormat = (date) => {
-    const paymentDate = new Date(date);
-    const convertMonth = monthName[paymentDate.getMonth()];
-    const convertDay = paymentDate.getDate();
-    return { convertMonth, convertDay };
+  const { data: payments = [], isLoading, isError, error } = useFetchSch();
+
+  const addPayment = useMutation({
+    mutationFn: createScheduledPayment,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["scheduledPayments"]);
+      alert("결제 예정이 성공적으로 추가되었습니다.");
+    },
+    onError: (error) => {
+      console.error("결제 예정 추가 실패:", error.response?.data || error.message);
+      alert("결제 예정 추가에 실패했습니다.");
+    },
+  });
+
+  const updatePayment = useMutation({
+    mutationFn: async ({ id, data }) => updateScheduledPayment(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["scheduledPayments"]);
+      alert("결제 예정이 성공적으로 수정되었습니다.");
+    },
+    onError: (error) => {
+      console.error("결제 예정 수정 실패:", error.response?.data || error.message);
+      alert("결제 예정 수정에 실패했습니다.");
+    },
+  });
+
+  const deletePayment = useMutation({
+    mutationFn: deleteScheduledPayment,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["scheduledPayments"]);
+      alert("결제 예정이 성공적으로 삭제되었습니다.");
+    },
+    onError: (error) => {
+      console.error("결제 예정 삭제 실패:", error.response?.data || error.message);
+      alert("결제 예정 삭제에 실패했습니다.");
+    },
+  });
+
+  const openModal = (payment = null) => {
+    setEditingPayment(payment);
+    setIsModalOpen(true);
   };
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    setEditingPayment(null);
+    setIsModalOpen(false);
+  };
+
+  const handleSave = (paymentData) => {
+    if (
+      !paymentData.paymentDetail ||
+      !paymentData.dueDate ||
+      !paymentData.lastPayment ||
+      !paymentData.cost ||
+      !paymentData.tradeName
+    ) {
+      alert("모든 필드를 입력해야 합니다.");
+      return;
+    }
+  
+    if (editingPayment) {
+      updatePayment.mutate({
+        id: editingPayment.paymentId,
+        data: paymentData,
+      });
+    } else {
+      addPayment.mutate(paymentData);
+    }
+    closeModal();
+  };
+
+  const handleDelete = (paymentId) => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      deletePayment.mutate(paymentId);
+    }
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = payments.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <Layout>
-      <ScheduledTitle>결제 예정</ScheduledTitle>
-      <ScheduledPaymentsContainer>
-        <PaymentHeader>
-          <div>결제 예정일</div>
-          <div>상호</div>
-          <div>상세내역</div>
-          <div>마지막 결제</div>
-          <div>금액</div>
-          <div>편집</div>
-        </PaymentHeader>
-
-        {payments.map((payment) => {
-          const { id, date, service, details, lastPayment, amount } = payment;
-          const { convertMonth, convertDay } = dateFormat(date);
-
-          return (
-            <PaymentItem key={id}>
-              <LeftBox>
-                <MonthText>{convertMonth}</MonthText>
-                <DayText>{convertDay}</DayText>
-              </LeftBox>
-              <div>{service}</div>
-              <div>{details}</div>
-              <div>{lastPayment}</div>
-              <div>{amount}</div>
-              <ActionButtons>
-                <button onClick={() => {}}>수정</button>
-                <button onClick={() => {}}>삭제</button>
-              </ActionButtons>
-            </PaymentItem>
-          );
-        })}
-
-        <AddPaymentButton onClick={openModal}>작성하기</AddPaymentButton>
-
-        {isModalOpen && <ScheduledModal closeModal={closeModal} />}
-      </ScheduledPaymentsContainer>
+      <Container>
+        <PageTitle>결제 예정</PageTitle>
+        <ContentWrapper>
+          <Table>
+            <thead>
+              <tr>
+                <Th>결제 예정일</Th>
+                <Th>상호</Th>
+                <Th>상세내역</Th>
+                <Th>마지막 결제</Th>
+                <Th>금액</Th>
+                <Th>편집</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <tr>
+                  <Td colSpan="6">
+                    <LoadingSpinners />
+                  </Td>
+                </tr>
+              ) : isError ? (
+                <tr>
+                  <Td colSpan="6">서버와의 연결에 문제가 발생했습니다.</Td>
+                </tr>
+              ) : currentItems.length === 0 ? (
+                <tr>
+                  <Td colSpan="6">결제 예정 내역이 없습니다.</Td>
+                </tr>
+              ) : (
+                currentItems.map((payment) => (
+                  <Tr key={payment.paymentId}>
+                    <Td>{payment.dueDate}</Td>
+                    <Td>{payment.tradeName}</Td>
+                    <Td>{payment.paymentDetail}</Td>
+                    <Td>{payment.lastPayment}</Td>
+                    <Td>{payment.cost.toLocaleString()}원</Td>
+                    <Td>
+                      <ButtonGroup>
+                        <EditButton onClick={() => openModal(payment)}>수정</EditButton>
+                        <DeleteButton onClick={() => handleDelete(payment.paymentId)}>
+                          삭제
+                        </DeleteButton>
+                      </ButtonGroup>
+                    </Td>
+                  </Tr>
+                ))
+              )}
+            </tbody>
+          </Table>
+        </ContentWrapper>
+        <Footer>
+          <PaginationWrapper>
+            <Pagination
+              currentPage={currentPage}
+              totalItems={payments.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
+            />
+          </PaginationWrapper>
+          <ActionButton onClick={() => openModal()}>작성하기</ActionButton>
+        </Footer>
+      </Container>
+      {isModalOpen && (
+        <ScheduledModal
+          closeModal={closeModal}
+          editPayment={editingPayment}
+          onSave={handleSave}
+        />
+      )}
     </Layout>
   );
 }
 
-const ScheduledPaymentsContainer = styled.div`
-  width: 1104px;
-  height: 800px;
-  margin-left: 15px;
-  margin-top: 15px;
-  top: 164px;
-  left: 304px;
-  padding: 24px 0px 0px 0px;
-  gap: 16px;
-  border-radius: 8px;
-  opacity: 0px;
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0px 20px 25px 0px rgba(76, 103, 100, 0.1);
+export default ScheduledPayments;
+
+// Styled components
+const Container = styled.div`
+  margin-top: 20px;
 `;
 
-const ScheduledTitle = styled.h3`
-  margin-left: 15px;
-  font-family: Pretendard;
-  font-size: 22px;
+const PageTitle = styled.h1`
+  font-size: 24px;
   font-weight: 400;
-  line-height: 32px;
-  text-align: left;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
+  margin-left: 20px;
+  margin-bottom: 15px;
+  color: ${({ theme }) => theme.colors.gray03};
 `;
 
-const PaymentHeader = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr 1fr 1fr 1fr;
-  font-weight: bold;
-  padding: 10px 0;
-  border-bottom: 1px solid #e0e0e0;
-  color: #666666;
-  text-align: center;
-`;
-
-const PaymentItem = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr 1fr 1fr 1fr;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #e0e0e0;
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-`;
-
-const LeftBox = styled.div`
+const ContentWrapper = styled.div`
+  background: ${({ theme }) => theme.colors.white};
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 93%;
+  margin: 0 auto;
+  min-height: 630px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-  height: 100px;
-  border-radius: 8px;
-  background-color: #f3f4f6;
-  margin: 0 auto;
 `;
 
-const MonthText = styled.div`
-  font-size: 14px;
-  color: #666666;
-`;
-
-const DayText = styled.div`
+const EmptyState = styled.div`
+  text-align: center;
+  color: ${({ theme }) => theme.colors.gray03};
   font-size: 18px;
+  margin: 50px 0;
+`;
+
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+`;
+
+const Th = styled.th`
+  padding: 10px;
+  text-align: center;
   font-weight: bold;
+  color: ${({ theme }) => theme.colors.black02};
 `;
 
-const ActionButtons = styled.div`
+const Tr = styled.tr`
+  &:hover {
+    background-color: #f9f9f9;
+  }
+`;
+
+const Td = styled.td`
+  padding: 12px 8px;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.gray05};
+`;
+
+const ButtonGroup = styled.div`
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  gap: 4px;
+`;
 
-  button {
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #f3f4f6;
-    border: none;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-  }
+const EditButton = styled.button`
+  padding: 5px 15px;
+  border: 1px solid ${({ theme }) => theme.colors.black};
+  background: transparent;
+  color: ${({ theme }) => theme.colors.black};
+  border-radius: 4px;
+  cursor: pointer;
 
-  button:hover {
-    background-color: #ddd;
+  &:hover {
+    color: ${({ theme }) => theme.colors.gray06};
   }
 `;
 
-const AddPaymentButton = styled.button`
-  background-color: #3b82f6;
-  color: white;
-  padding: 10px 20px;
+const DeleteButton = styled.button`
+  padding: 5px 15px;
+  border: none;
+  background: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.white};
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.gray06};
+  }
+`;
+
+const ActionButton = styled.button`
+  position: absolute;
+  right: 30px;
+  height: 40px;
+  padding: 0 24px;
+  background-color: ${({ theme }) => theme.colors.blue};
+  color: ${({ theme }) => theme.colors.white};
   border: none;
   border-radius: 6px;
-  cursor: pointer;
   font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.primaryHover};
+  }
+`;
+
+const Footer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
   margin-top: 20px;
-  width: 96px;
-  height: 40px;
-  box-shadow: 0px 20px 25px 0px rgba(76, 103, 100, 0.1);
+`;
+
+const PaginationWrapper = styled.div`
   position: absolute;
-  bottom: -100px; /* 아래쪽 여백 */
-  right: 70px; /* 오른쪽 여백 */
+  left: 50%;
+  transform: translateX(-50%);
 `;

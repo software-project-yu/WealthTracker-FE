@@ -1,20 +1,89 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-const ScheduledModal = ({ closeModal }) => {
+const ScheduledModal = ({ closeModal, editPayment, onSave }) => {
+  const [formData, setFormData] = useState({
+    date: "",
+    service: "",
+    details: "",
+    lastPayment: "",
+    amount: "",
+  });
+
+  useEffect(() => {
+    if (editPayment) {
+      setFormData({
+        date: editPayment.dueDate || "",
+        service: editPayment.tradeName || "",
+        details: editPayment.paymentDetail || "",
+        lastPayment: editPayment.lastPayment || "",
+        amount: editPayment.cost ? editPayment.cost.toString() : "", // 쉼표 없는 숫자
+      });
+    } else {
+      setFormData({
+        date: "",
+        service: "",
+        details: "",
+        lastPayment: "",
+        amount: "",
+      });
+    }
+  }, [editPayment]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // 날짜 형식 검증
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!formData.date.match(dateRegex) || !formData.lastPayment.match(dateRegex)) {
+      alert("날짜 형식은 YYYY-MM-DD여야 합니다.");
+      return;
+    }
+
+    // 금액 변환 및 검증
+    const sanitizedAmount = formData.amount.replace(/[^0-9]/g, "");
+    if (!sanitizedAmount || Number(sanitizedAmount) <= 0) {
+      alert("유효한 금액을 입력하세요.");
+      return;
+    }
+
+    // 제출 데이터 구성
+    const submitData = {
+      paymentDetail: formData.details,
+      dueDate: formData.date,
+      lastPayment: formData.lastPayment,
+      cost: Number(sanitizedAmount),
+      tradeName: formData.service,
+    };
+
+    onSave(submitData);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "amount") {
+      const sanitizedValue = value.replace(/[^0-9]/g, "");
+      setFormData((prev) => ({ ...prev, [name]: sanitizedValue }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
   return (
-    <ModalBackground onClick={closeModal}>
+    <ModalOverlay onClick={closeModal}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
+        <ModalTitle>결제 예정일</ModalTitle>
         <CloseButton onClick={closeModal}>✕</CloseButton>
-        <form>
+        <Form onSubmit={handleSubmit}>
           <FormGroup>
-            <Label>결제 예정일</Label>
+            <Label>결제 예정일이 며칠인가요?</Label>
             <Input
               type="text"
               name="date"
-              placeholder="결제 예정일이 며칠인가요?"
-              onFocus={(e) => (e.target.type = "date")}
-              onBlur={(e) => (e.target.type = "text")}
+              value={formData.date}
+              onChange={handleChange}
+              placeholder="YYYY-MM-DD"
             />
           </FormGroup>
           <FormGroup>
@@ -22,6 +91,8 @@ const ScheduledModal = ({ closeModal }) => {
             <Input
               type="text"
               name="service"
+              value={formData.service}
+              onChange={handleChange}
               placeholder="브랜드 또는 회사명을 입력해 주세요."
             />
           </FormGroup>
@@ -30,6 +101,8 @@ const ScheduledModal = ({ closeModal }) => {
             <Input
               type="text"
               name="details"
+              value={formData.details}
+              onChange={handleChange}
               placeholder="정기 구독 등과 같은 자세한 내용을 입력해 주세요."
             />
           </FormGroup>
@@ -38,9 +111,9 @@ const ScheduledModal = ({ closeModal }) => {
             <Input
               type="text"
               name="lastPayment"
-              placeholder="가장 최근 결제일이 며칠인가요?"
-              onFocus={(e) => (e.target.type = "date")}
-              onBlur={(e) => (e.target.type = "text")}
+              value={formData.lastPayment}
+              onChange={handleChange}
+              placeholder="YYYY-MM-DD"
             />
           </FormGroup>
           <FormGroup>
@@ -48,86 +121,109 @@ const ScheduledModal = ({ closeModal }) => {
             <Input
               type="text"
               name="amount"
-              placeholder="금액이 어느 정도 인가요?"
+              value={formData.amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              onChange={handleChange}
+              placeholder="금액을 입력하세요."
             />
           </FormGroup>
-          <SaveButton type="button">저장</SaveButton>
-        </form>
+          <SaveButton type="submit">저장</SaveButton>
+        </Form>
       </ModalContent>
-    </ModalBackground>
+    </ModalOverlay>
   );
 };
 
-export default ScheduledModal;
-
-const ModalBackground = styled.div`
+const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 `;
 
 const ModalContent = styled.div`
-  background-color: #ffffff;
-  padding: 24px;
-  border-radius: 10px;
+  background: ${({ theme }) => theme.colors.white};
+  padding: 32px;
+  border-radius: 12px;
   width: 420px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   position: relative;
+`;
+
+const ModalTitle = styled.h2`
+  font-size: 20px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.black02};
+  margin-bottom: 32px;
 `;
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 24px;
+  right: 24px;
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 24px;
+  color: ${({ theme }) => theme.colors.gray03};
   cursor: pointer;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 `;
 
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 16px;
+  gap: 8px;
 `;
 
 const Label = styled.label`
   font-size: 14px;
-  margin-bottom: 8px;
-  color: #333333;
+  font-weight: bold;
+  color: ${({ theme }) => theme.colors.black02};
 `;
 
 const Input = styled.input`
-  padding: 10px;
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid ${({ theme }) => theme.colors.gray00};
+  border-radius: 8px;
   font-size: 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  outline: none;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.gray03};
+    font-style: italic;
+  }
+
   &:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.blue};
   }
 `;
 
 const SaveButton = styled.button`
-  background-color: #3b82f6;
-  color: white;
-  padding: 12px 0;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 12px;
   width: 100%;
-  text-align: center;
+  height: 48px;
+  background: ${({ theme }) => theme.colors.blue};
+  color: ${({ theme }) => theme.colors.white};
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+
   &:hover {
-    background-color: #2563eb;
+    opacity: 0.9;
   }
 `;
+
+export default ScheduledModal;
