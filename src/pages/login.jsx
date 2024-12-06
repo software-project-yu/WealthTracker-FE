@@ -1,37 +1,38 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { BsChatFill } from "react-icons/bs";
 import {
   Wrapper,
   Title,
   Form,
   Button,
-  InputWrapper
+  OrText,
+  InputWrapper,
 } from "../components/Login.js";
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
 const Input = styled.input`
-  width: 85%;
+   width: 85%;
   padding: 10px;
   padding-right: 30px;
-  border: 1px solid #ccc;
+  border: 1px solid #ccc; /* 기본 테두리 색상 */
   border-radius: 4px;
   margin: 10px 0;
-  background: transparent;
-  color: #000;
-  outline: none;
-  position: relative; /* position relative 추가 */
-
+  background: transparent; /* 배경 투명 */
+  color: #000; /* 텍스트 색상 */
+  outline: none; /* 기본 포커스 테두리 제거 */
   ::placeholder {
-    color: #aaa;
+    color: #aaa; /* Placeholder 색상 */
   }
 
   &:focus {
-    border: 1px solid black;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
+    border: 1px solid black; /* 클릭/포커스 시 진한 테두리 */
+    
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* 애니메이션 */
+  
 `;
+
 const PasswordToggle = styled.button`
   position: absolute;
   right: 10px;
@@ -50,7 +51,7 @@ const ForgotPasswordLink = styled(Link)`
   font-size: 10px;
   color: #007bff;
   cursor: pointer;
-  text-decoration: none;
+  text-decoration: underline;
 `;
 
 const CheckboxWrapper = styled.div`
@@ -64,7 +65,6 @@ const CheckboxLabel = styled.label`
   font-size: 12px;
   margin-left: 5px;
 `;
-
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -84,6 +84,7 @@ function Login() {
       }
     }
   }, []);
+
   const handleLogin = async () => {
     console.log(`${API_URL}`);
     try {
@@ -115,11 +116,12 @@ function Login() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
   return (
     <Wrapper>
       <Title>WealthTracker</Title>
       <Form onSubmit={(e) => e.preventDefault()}>
-        <InputWrapper>
+        <div>
           <label>이메일 주소</label>
           <Input
             type="email"
@@ -127,20 +129,21 @@ function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-        </InputWrapper>
+        </div>
 
         <InputWrapper>
           <label>비밀번호</label>
           <Input
             type={showPassword ? "text" : "password"}
             value={password}
-            placeholder="비밀번호를 입력해 주세요."
             onChange={(e) => setPassword(e.target.value)}
           />
           <PasswordToggle type="button" onClick={togglePasswordVisibility}>
             {showPassword ? <FaEye /> : <FaEyeSlash />}
           </PasswordToggle>
-          <ForgotPasswordLink to="/findpw">비밀번호를 잊으셨나요?</ForgotPasswordLink>
+          <ForgotPasswordLink to="/findpw">
+            비밀번호를 잊으셨나요?
+          </ForgotPasswordLink>
         </InputWrapper>
 
         <CheckboxWrapper>
@@ -155,7 +158,18 @@ function Login() {
         <Button className="login" type="button" onClick={handleLogin}>
           로그인
         </Button>
-        <Button className="signup" type="button" onClick={() => navigate("/signup")}>
+
+        <OrText>or sign in with</OrText>
+
+        <Button className="kakao" type="button" onClick={() => {}}>
+          {<BsChatFill />} 카카오 계정 로그인
+        </Button>
+
+        <Button
+          className="signup"
+          type="button"
+          onClick={() => navigate("/signup")}
+        >
           회원가입 하기
         </Button>
       </Form>
