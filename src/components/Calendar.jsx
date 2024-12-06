@@ -1,13 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import GoalModal from "../components/GoalModal";
 
-const Calendar = ({ targetId }) => {
+const Calendar = ({ targetId, onSave }) => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [goals, setGoals] = useState({});
+  const [goals, setGoals] = useState(() => {
+    // 로컬 저장소에서 목표 데이터를 초기화
+    const savedGoals = localStorage.getItem("savingsGoals");
+    return savedGoals ? JSON.parse(savedGoals) : {};
+  });
+
+  useEffect(() => {
+    // 목표 데이터를 로컬 저장소에 저장
+    localStorage.setItem("savingsGoals", JSON.stringify(goals));
+  }, [goals]);
 
   // 달력 날짜 계산
   const firstDayOfMonth = new Date(
@@ -53,7 +62,12 @@ const Calendar = ({ targetId }) => {
 
   // 날짜 클릭
   const handleDayClick = (date) => {
-    setSelectedDate(date);
+    const localDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+    setSelectedDate(localDate);
     setModalOpen(true);
   };
 
@@ -63,7 +77,23 @@ const Calendar = ({ targetId }) => {
   };
 
   const handleGoalSubmit = (goal) => {
-    setGoals({ ...goals, [selectedDate.toDateString()]: goal });
+    const dateKey = selectedDate.toDateString();
+    const updatedGoal = parseFloat(goal);
+
+    setGoals((prevGoals) => {
+      if (updatedGoal === 0) {
+        // 값이 0일 경우 해당 날짜 데이터 삭제
+        const { [dateKey]: _, ...restGoals } = prevGoals;
+        return restGoals;
+      }
+      // 값이 0이 아닐 경우 덮어쓰기
+      return {
+        ...prevGoals,
+        [dateKey]: updatedGoal,
+      };
+    });
+
+    onSave(updatedGoal); // 부모 컴포넌트에 전달
     closeModal();
   };
 
@@ -117,6 +147,7 @@ const Calendar = ({ targetId }) => {
               key={index}
               onClick={() => handleDayClick(date)}
               isCurrentMonth={isCurrentMonth}
+              style={{ visibility: isCurrentMonth ? "visible" : "hidden" }}
             >
               {isToday && <TodayMarker />}
               <DayText isToday={isToday}>{date.getDate()}</DayText>
@@ -133,7 +164,7 @@ const Calendar = ({ targetId }) => {
           date={selectedDate}
           onClose={closeModal}
           onSubmit={handleGoalSubmit}
-          targetId={targetId} // targetId 전달
+          targetId={targetId}
         />
       )}
     </CalendarWrapper>
@@ -257,6 +288,8 @@ const GoalText = styled.div`
   border-radius: 4px;
   text-align: center;
   z-index: 1;
+  white-space: nowrap; // 텍스트가 한 줄로 유지되도록 함
+  max-width: 200px; // 최대 너비를 설정 (길어지면 옆으로 확장)
 `;
 
 export default Calendar;
