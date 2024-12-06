@@ -8,7 +8,7 @@ export default function GoalModal2({
   setTargetAmount,
   onSave,
   selectedCategory,
-  currentExpend, // currentExpend 추가
+  currentExpend,
 }) {
   const [newTargetAmount, setNewTargetAmount] = useState(targetAmount);
 
@@ -16,54 +16,118 @@ export default function GoalModal2({
     setNewTargetAmount(targetAmount);
   }, [targetAmount]);
 
-  const handleSave = () => {
-    if (newTargetAmount && !isNaN(newTargetAmount)) {
-      const isCreating = targetAmount === 0; // targetAmount가 0이면 생성, 0이 아니면 수정
-      const url = isCreating
-        ? `${import.meta.env.VITE_SERVER_URL}/api/category-target/create`
-        : `${import.meta.env.VITE_SERVER_URL}/api/category-target/update`;
-      const method = isCreating ? "POST" : "PUT";
-
+  const handleSave = async () => {
+    if (newTargetAmount !== null && !isNaN(newTargetAmount)) {
       const requestBody = JSON.stringify({
         category: selectedCategory,
         targetAmount: parseFloat(newTargetAmount), // 숫자로 변환하여 전달
       });
 
-      console.log("API 요청 URL:", url);
-      console.log("API 요청 메소드:", method);
       console.log("API 요청 본문:", requestBody);
 
-      fetch(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
-        },
-        body: requestBody,
-      })
-        .then((response) => {
+      // 목표가 이미 존재하는 경우는 업데이트 시도
+      const updateTarget = async () => {
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_SERVER_URL}/api/category-target/update`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+              },
+              body: requestBody,
+            }
+          );
+
+          const responseText = await response.text();
+
           if (!response.ok) {
-            return response.text().then((text) => {
-              console.error(
-                `서버 응답 실패: ${response.status} ${response.statusText}`
-              );
-              console.error("서버 응답 내용:", text);
-              throw new Error(
-                `서버 응답 실패: ${response.status} ${response.statusText}`
-              );
-            });
+            console.error(
+              `서버 응답 실패: ${response.status} ${response.statusText}`
+            );
+            console.error("서버 응답 내용:", responseText);
+            alert("저축 금액 설정에 실패했습니다.");
+            return;
           }
-          return response.json();
-        })
-        .then((result) => {
-          console.log("목표 금액이 성공적으로 저장되었습니다.", result);
-          setTargetAmount(result.targetAmount);
-          onSave(result.targetAmount);
+
+          try {
+            const result = JSON.parse(responseText);
+            console.log("목표 금액 처리 성공:", result);
+            setTargetAmount(result.targetAmount);
+            onSave(result.targetAmount);
+          } catch (error) {
+            console.warn("응답이 JSON 형식이 아님:", responseText);
+            console.log("응답 내용:", responseText);
+            onSave(newTargetAmount);
+          }
+
           onClose();
-        })
-        .catch((error) => {
-          console.error("목표 금액 저장 실패:", error);
-        });
+        } catch (error) {
+          console.error("목표 금액 처리 실패:", error);
+          alert("저축 금액 설정 중 오류가 발생했습니다.");
+        }
+      };
+
+      // 목표가 없는 경우는 새로 생성
+      const createTarget = async () => {
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_SERVER_URL}/api/category-target/create`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+              },
+              body: requestBody,
+            }
+          );
+
+          const responseText = await response.text();
+
+          if (!response.ok) {
+            console.error(
+              `서버 응답 실패: ${response.status} ${response.statusText}`
+            );
+            console.error("서버 응답 내용:", responseText);
+            // 이미 존재하는 목표라는 응답이 온 경우 업데이트 시도
+            if (
+              response.status === 400 &&
+              responseText.includes("이미 존재하는 목표")
+            ) {
+              console.log("목표가 이미 존재합니다. 업데이트를 시도합니다.");
+              await updateTarget();
+              return;
+            }
+            alert("저축 금액 설정에 실패했습니다.");
+            return;
+          }
+
+          try {
+            const result = JSON.parse(responseText);
+            console.log("목표 금액 처리 성공:", result);
+            setTargetAmount(result.targetAmount);
+            onSave(result.targetAmount);
+          } catch (error) {
+            console.warn("응답이 JSON 형식이 아님:", responseText);
+            console.log("응답 내용:", responseText);
+            onSave(newTargetAmount);
+          }
+
+          onClose();
+        } catch (error) {
+          console.error("목표 금액 처리 실패:", error);
+          alert("저축 금액 설정 중 오류가 발생했습니다.");
+        }
+      };
+
+      // 새 목표 생성 시도
+      if (targetAmount === 0) {
+        await createTarget();
+      } else {
+        await updateTarget();
+      }
     } else {
       alert("유효한 금액을 입력해주세요.");
     }
@@ -141,7 +205,7 @@ const Title = styled.h3`
   font-family: Pretendard;
   font-size: 16px;
   font-weight: 600;
-  margin: 0 auto; // 중앙 정렬을 위해 변경
+  margin: 0 auto;
 `;
 
 const ModalBody = styled.div`
@@ -162,6 +226,7 @@ const Input = styled.input`
 const SaveButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
+  width: 100%;
 `;
 
 const SaveButton = styled.button`
