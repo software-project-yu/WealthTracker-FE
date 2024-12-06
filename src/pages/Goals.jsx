@@ -67,27 +67,6 @@ export default function Goals() {
     });
 
     // 저축 목표 가져오기
-    fetch(`${import.meta.env.VITE_SERVER_URL}/api/savings-target`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch savings target");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Fetched savings target:", data); // 데이터 확인을 위한 로그 추가
-        setSavingsTargetAmount(data.targetAmount);
-        setCurrentAmount(data.currentAmount); // 현재 금액 설정
-      })
-      .catch((error) => {
-        console.error("Error fetching savings target:", error);
-      });
   }, []);
 
   const handleSaveTarget = (category, newTargetAmount) => {
@@ -413,7 +392,7 @@ const CategoryName = styled.span`
 const StatusText = styled.span`
   font-size: 0.9rem;
   color: #666;
-  margin-left: 20px;
+  margin-left: 5px;
 `;
 
 const StatusText2 = styled.span`
