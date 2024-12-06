@@ -46,14 +46,21 @@ export default function Transactions() {
   });
 
   const handlePrevMonth = () => {
-      const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
-      setCurrentDate(newDate);
+    setCurrentDate(prevDate => {
+        const newDate = new Date(prevDate);
+        newDate.setMonth(prevDate.getMonth() - 1);
+        return newDate;
+    });
   };
-  
+
   const handleNextMonth = () => {
-      const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
-      setCurrentDate(newDate);
+    setCurrentDate(prevDate => {
+        const newDate = new Date(prevDate);
+        newDate.setMonth(prevDate.getMonth() + 1);
+        return newDate;
+    });
   };
+
 
   const addTransaction = useMutation({
     mutationFn: (data) =>
