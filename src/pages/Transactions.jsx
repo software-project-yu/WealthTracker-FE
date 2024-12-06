@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import  { useState, useEffect } from "react";
 import Layout from "../components/common/Layout";
 import Tabs from "../components/transactions/Tabs";
 import TransactionList from "../components/transactions/TransactionList";
@@ -30,13 +30,30 @@ export default function Transactions() {
 
   const queryClient = useQueryClient();
   const itemsPerPage = 9;
-  const currentMonth = currentDate.getMonth() + 1;
+  useEffect(() => { setCurrentPage(1); }, [currentDate]);
+
 
   const { data: transactions, isLoading: isExpendLoading, error: expendError } =
-    useFetchTrans("/api/expend/list", { month: currentMonth });
+    useFetchTrans("/api/expend/list", { 
+      month: currentDate.getMonth() + 1,
+      year: currentDate.getFullYear()
+  });
 
   const { data: incomeList, isLoading: isIncomeLoading, error: incomeError } =
-    useFetchTrans("/api/income/list", { month: currentMonth });
+    useFetchTrans("/api/income/list", { 
+      month: currentDate.getMonth() + 1,
+      year: currentDate.getFullYear()
+  });
+
+  const handlePrevMonth = () => {
+      const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
+      setCurrentDate(newDate);
+  };
+  
+  const handleNextMonth = () => {
+      const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
+      setCurrentDate(newDate);
+  };
 
   const addTransaction = useMutation({
     mutationFn: (data) =>
@@ -144,11 +161,7 @@ export default function Transactions() {
         <InnerContainer>
           <MonthNavigation>
             <NavButton
-              onClick={() =>
-                setCurrentDate(
-                  new Date(currentDate.getFullYear(), currentDate.getMonth() - 1)
-                )
-              }
+              onClick={handlePrevMonth}
             >
               ‹
             </NavButton>
@@ -156,11 +169,7 @@ export default function Transactions() {
               {currentDate.toISOString().slice(0, 7).replace("-", "년 ") + "월"}
             </MonthDisplay>
             <NavButton
-              onClick={() =>
-                setCurrentDate(
-                  new Date(currentDate.getFullYear(), currentDate.getMonth() + 1)
-                )
-              }
+              onClick={handleNextMonth}
             >
               ›
             </NavButton>
