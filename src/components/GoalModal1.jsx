@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import api from "../api/api"; 
 
 export default function GoalModal1({
   isOpen,
@@ -16,44 +15,63 @@ export default function GoalModal1({
     setNewTargetAmount(targetAmount);
   }, [targetAmount]);
 
-  // 현재 월의 첫날과 마지막 날 구하는 함수
   const getFirstAndLastDayOfMonth = (year, month) => {
     const firstDay = new Date(year, month, 1).toISOString().split("T")[0];
     const lastDay = new Date(year, month + 1, 0).toISOString().split("T")[0];
     return { firstDay, lastDay };
   };
 
-  // 저장 버튼 클릭 시 실행되는 함수
   const handleSave = () => {
     if (newTargetAmount && !isNaN(newTargetAmount)) {
+      const url = `${import.meta.env.VITE_SERVER_URL}/api/target/create`;
+      const method = "POST";
+
       const today = new Date();
       const { firstDay, lastDay } = getFirstAndLastDayOfMonth(
         today.getFullYear(),
         today.getMonth()
       );
 
-      const requestBody = {
-        targetAmount: Number(newTargetAmount, 10), // 숫자형으로 변환
+      const requestBody = JSON.stringify({
+        targetAmount: parseInt(newTargetAmount, 10), // 숫자형으로 변환
         startDate: firstDay,
         endDate: lastDay,
-      };
+      });
 
+      console.log("API 요청 URL:", url);
+      console.log("API 요청 메소드:", method);
       console.log("API 요청 본문:", requestBody);
 
-      // api 인스턴스를 사용하여 POST 요청 보내기
-      api
-        .post("/api/target/create", requestBody)
+      fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+        },
+        body: requestBody,
+      })
         .then((response) => {
-          console.log(
-            "저축 목표 금액이 성공적으로 저장되었습니다.",
-            response.data
-          );
-          setTargetAmount(response.data.targetAmount);
-          onSave(response.data.targetAmount); // onSave 콜백 호출
+          if (!response.ok) {
+            return response.text().then((text) => {
+              console.error(
+                `서버 응답 실패: ${response.status} ${response.statusText}`
+              );
+              console.error("서버 응답 내용:", text);
+              throw new Error(
+                `서버 응답 실패: ${response.status} ${response.statusText}`
+              );
+            });
+          }
+          return response.json();
+        })
+        .then((result) => {
+          console.log("저축 목표 금액이 성공적으로 저장되었습니다.", result);
+          setTargetAmount(result.targetAmount);
+          onSave(result.targetAmount); // onSave 콜백 호출
           onClose(); // 저장 성공 시 모달 닫기
         })
-        .catch(() => {
-          alert("저축 목표 저장에 실패했습니다. 서버 관리자에게 문의해주세요.");
+        .catch((error) => {
+          console.error("저축 목표 금액 저장 실패:", error);
         });
     } else {
       alert("유효한 금액을 입력해주세요.");
