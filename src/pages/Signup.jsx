@@ -243,7 +243,7 @@ function Signup() {
   
       if (response.status === 200) {
         alert("회원가입 성공!");
-        navigate("/login");
+        navigate("/");
       }
     } catch (error) {
       if (error.response) {

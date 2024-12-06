@@ -102,7 +102,7 @@ function Login() {
           localStorage.removeItem("email");
         }
         alert("로그인 성공!");
-        navigate("/"); // 로그인 성공 후 홈 페이지로 이동
+        navigate("/main"); // 로그인 성공 후 홈 페이지로 이동
       } else {
         alert("로그인 실패: 잘못된 이메일 또는 비밀번호입니다.");
       }
