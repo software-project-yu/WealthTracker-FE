@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import api from "../api/api"; // api.js에서 default로 export 했으므로 default import 사용
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "../api/api"; // api.js에서 export된 api를 사용
 
 const GoalModal = ({ date, onClose, onSubmit }) => {
   const [goal, setGoal] = useState("");
   const [formattedDate, setFormattedDate] = useState("");
   const fixedTargetId = 1; // targetId를 1로 고정
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (date) {
@@ -17,7 +20,29 @@ const GoalModal = ({ date, onClose, onSubmit }) => {
     }
   }, [date]);
 
-  const handleSubmit = async () => {
+  const mutation = useMutation(
+    async (requestBody) => {
+      const response = await api.post(
+        `/api/target/savings/${fixedTargetId}`,
+        requestBody
+      );
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        console.log("저축 금액 설정 성공:", data);
+        queryClient.invalidateQueries(["savingsGoal"]);
+        onSubmit(parseFloat(goal)); // 상태를 갱신
+        onClose();
+      },
+      onError: (error) => {
+        console.error("저축 목표 금액 저장 실패:", error);
+        alert("저축 금액 설정 중 오류가 발생했습니다.");
+      },
+    }
+  );
+
+  const handleSubmit = () => {
     const goalAmount = parseFloat(goal);
 
     // goalAmount가 유효한 숫자인지 확인, 0도 유효하게 처리
@@ -31,22 +56,7 @@ const GoalModal = ({ date, onClose, onSubmit }) => {
       amount: Number(goalAmount),
     };
 
-    try {
-      const response = await api.post(
-        `/api/target/savings/${fixedTargetId}`,
-        requestBody
-      );
-
-      // 응답 본문 처리 (결과 출력)
-      const result = response.data; // 서버에서 응답 받은 데이터
-      console.log("저축 금액 설정 성공:", result);
-
-      onSubmit(goalAmount); // goalAmount가 0일 때도 호출하여 상태를 갱신
-
-      onClose();
-    } catch (error) {
-      alert("저축 금액 설정 중 오류가 발생했습니다.");
-    }
+    mutation.mutate(requestBody);
   };
 
   return (
