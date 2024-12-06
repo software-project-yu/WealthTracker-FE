@@ -15,7 +15,6 @@ export default function GoalModal2({
   useEffect(() => {
     setNewTargetAmount(targetAmount);
   }, [targetAmount]);
-
   const handleSave = async () => {
     if (newTargetAmount !== null && !isNaN(newTargetAmount)) {
       const requestBody = JSON.stringify({
@@ -122,11 +121,11 @@ export default function GoalModal2({
         }
       };
 
-      // 새 목표 생성 시도
-      if (targetAmount === 0) {
-        await createTarget();
+      // 목표 금액이 0일 때 새 목표 생성 시도
+      if (newTargetAmount === 0) {
+        await createTarget(); // 0일 경우 새 목표 생성
       } else {
-        await updateTarget();
+        await updateTarget(); // 0이 아니면 기존 목표를 업데이트
       }
     } else {
       alert("유효한 금액을 입력해주세요.");

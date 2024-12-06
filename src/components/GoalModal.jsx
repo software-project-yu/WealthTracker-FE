@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import api from "../api/api"; // api.js에서 default로 export 했으므로 default import 사용
 
 const GoalModal = ({ date, onClose, onSubmit }) => {
   const [goal, setGoal] = useState("");
@@ -25,54 +26,25 @@ const GoalModal = ({ date, onClose, onSubmit }) => {
       return;
     }
 
-    const requestBody = JSON.stringify({
+    const requestBody = {
       date: formattedDate,
-      amount: goalAmount,
-    });
+      amount: Number(goalAmount),
+    };
 
     try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_SERVER_URL
-        }/api/target/savings/${fixedTargetId}`,
-        {
-          method: "POST", // POST 메서드 사용
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
-          },
-          body: requestBody,
-        }
+      const response = await api.post(
+        `/api/target/savings/${fixedTargetId}`,
+        requestBody
       );
 
-      const responseText = await response.text();
+      // 응답 본문 처리 (결과 출력)
+      const result = response.data; // 서버에서 응답 받은 데이터
+      console.log("저축 금액 설정 성공:", result);
 
-      if (!response.ok) {
-        console.error(
-          `서버 응답 실패: ${response.status} ${response.statusText}`
-        );
-        console.error("서버 응답 내용:", responseText);
-        alert("저축 금액 설정에 실패했습니다.");
-        return;
-      }
-
-      // 응답 본문이 비어 있으면 무시하고 성공 처리
-      if (responseText.trim()) {
-        try {
-          const result = JSON.parse(responseText);
-          console.log("저축 금액 설정 성공:", result);
-        } catch (error) {
-          console.warn("응답 본문 파싱 실패:", responseText);
-          alert("서버 응답을 처리하는 중 오류가 발생했습니다.");
-        }
-      }
-
-      console.log("저축 금액이 성공적으로 설정되었습니다.");
       onSubmit(goalAmount); // goalAmount가 0일 때도 호출하여 상태를 갱신
 
       onClose();
     } catch (error) {
-      console.error("저축 금액 설정 실패:", error);
       alert("저축 금액 설정 중 오류가 발생했습니다.");
     }
   };
