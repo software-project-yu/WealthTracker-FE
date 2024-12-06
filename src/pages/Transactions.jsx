@@ -61,7 +61,6 @@ export default function Transactions() {
     });
   };
 
-
   const addTransaction = useMutation({
     mutationFn: (data) =>
       modalType === "income" ? createIncome(data) : createExpend(data),
