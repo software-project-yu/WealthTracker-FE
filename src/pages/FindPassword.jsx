@@ -156,7 +156,7 @@ const API_URL = import.meta.env.VITE_SERVER_URL;
       if (response.status === 200) {
         alert("비밀번호가 재설정되었습니다!");
         setShowResetPopup(false);
-        navigate("/login");
+        navigate("/");
       }
     } catch (error) {
       console.error(error);
@@ -192,7 +192,7 @@ const API_URL = import.meta.env.VITE_SERVER_URL;
             {loading ? "처리 중..." : "비밀번호 재설정"}
           </Button>
         </Form>
-        <LoginLink onClick={() => navigate("/login")}>로그인으로 돌아가기</LoginLink>
+        <LoginLink onClick={() => navigate("/")}>로그인으로 돌아가기</LoginLink>
       </Wrapper>
 
       {/* 재설정 코드 팝업 */}
