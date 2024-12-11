@@ -16,6 +16,9 @@ export default function Layout({ children }) {
 const Container = styled.div`
   display: flex;
   justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  flex: 1;
   background-color: ${({ theme }) => theme.colors.gray00};
   min-height: 100vh;
 `;
@@ -30,4 +33,6 @@ const SubContainer = styled.div`
 const Sub = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1;
+  padding: 1rem;
 `;

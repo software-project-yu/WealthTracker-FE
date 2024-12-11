@@ -13,7 +13,7 @@ export default function BackGround() {
 }
 const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.gray00};
-  width: 100%;
+  width: auto;
   height: 3rem;
   width: auto;
   height: 1.5rem;
