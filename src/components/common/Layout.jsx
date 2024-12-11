@@ -23,8 +23,6 @@ const SubContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1440px;
-  height: 1024px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.colors.gray00};
 `;
