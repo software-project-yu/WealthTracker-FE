@@ -352,7 +352,7 @@ function Signup() {
         </Button>
         <Row>
           <Alreadacc>이미 계정이 있으신가요?</Alreadacc>
-          <LoginLink onClick={() => navigate("/login")}>로그인하기</LoginLink>
+          <LoginLink onClick={() => navigate("/")}>로그인하기</LoginLink>
         </Row>
       </Form>
     </Wrapper>
